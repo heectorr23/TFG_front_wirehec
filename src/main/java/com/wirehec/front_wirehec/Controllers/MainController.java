@@ -102,27 +102,31 @@ public class MainController {
     private void navigateToView() throws IOException {
         Button source = (Button) menuVBox.getScene().getFocusOwner();
         String view = source.getText();
-        contentPane.getChildren().clear();
-        switch (view) {
-            case "Inicio":
-                Parent helloView = FXMLLoader.load(getClass().getResource("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml"));
-                contentPane.getChildren().add(helloView);
-                break;
-            case "Productos":
-                contentPane.getChildren().add(new Label("Productos View - Add your content here"));
-                break;
-            case "Proveedores":
-                contentPane.getChildren().add(new Label("Proveedores View - Add your content here"));
-                break;
-            case "Contabilidad":
-                contentPane.getChildren().add(new Label("Contabilidad View - Add your content here"));
-                break;
-            case "Facturas":
-                contentPane.getChildren().add(new Label("Facturas View - Add your content here"));
-                break;
-            case "Ajustes":
-                contentPane.getChildren().add(new Label("Ajustes View - Add your content here"));
-                break;
+        try {
+            switch (view) {
+                case "Inicio":
+                    // Limpia el contenedor y recarga la vista principal
+                    Parent root = FXMLLoader.load(getClass().getResource("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml"));
+                    contentPane.getScene().setRoot(root); // Reemplaza toda la escena con la nueva vista
+                    break;
+                case "Productos":
+                    contentPane.getChildren().setAll(new Label("Productos View - Add your content here"));
+                    break;
+                case "Proveedores":
+                    contentPane.getChildren().setAll(new Label("Proveedores View - Add your content here"));
+                    break;
+                case "Contabilidad":
+                    contentPane.getChildren().setAll(new Label("Contabilidad View - Add your content here"));
+                    break;
+                case "Facturas":
+                    contentPane.getChildren().setAll(new Label("Facturas View - Add your content here"));
+                    break;
+                case "Ajustes":
+                    contentPane.getChildren().setAll(new Label("Ajustes View - Add your content here"));
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
