@@ -1,4 +1,4 @@
 package com.wirehec.front_wirehec.Controllers;
 
-public class HelloController {
+public class ContabilityController {
 }
