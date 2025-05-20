@@ -23,64 +23,16 @@
     -fx-background-color: rgba(255, 255, 255, 0.2);
 }
 
-.menu-icon {
-    -fx-pref-width: 20;
-    -fx-pref-height: 20;
-    -fx-background-color: white;
-    -fx-scale-shape: false;
-}
-
-.menu-button .text {
-    -fx-padding: 0 0 0 10px;
-    -fx-transition: all 0.3s ease;
-}
-
-.menu-panel:not(.expanded) .menu-button .text {
-    -fx-opacity: 0;
-    -fx-max-width: 0;
-    -fx-padding: 0;
-}
-
-.menu-panel.expanded .menu-button .text {
-    -fx-opacity: 1;
-    -fx-max-width: 200;
-}
-
 .menu-label {
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
 
-.menu-panel:not(.expanded) .menu-label {
-    -fx-visibility: hidden;
-}
-
-.menu-panel.expanded .menu-label {
-    -fx-visibility: visible;
-}
-
 .header-panel {
     -fx-background-color: #4a90e2;
     -fx-padding: 10px;
     -fx-alignment: center;
-}
-
-.hamburger-button {
-    -fx-background-color: transparent;
-    -fx-cursor: hand;
-}
-
-.hamburger-icon {
-    -fx-background-color: white;
-    -fx-pref-width: 20px;
-    -fx-pref-height: 20px;
-}
-
-.header-title {
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
 }
 
 .user-button {

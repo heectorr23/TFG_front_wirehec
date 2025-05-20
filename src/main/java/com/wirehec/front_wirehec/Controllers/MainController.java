@@ -10,30 +10,46 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 
 public class MainController {
-    @FXML
-    private VBox menuVBox;
 
-    @FXML
-    private Button userDropdown;
+    @FXML private VBox menuVBox;
+    @FXML private Button userDropdown;
+    @FXML private VBox userMenu;
+    @FXML private GridPane contentPane;
+    @FXML private Label menuLabel;
+    @FXML private Button hamburgerButton;
 
-    @FXML
-    private VBox userMenu;
-
-    @FXML
-    private GridPane contentPane;
-
-    @FXML
-    private Label menuLabel;
-
-    @FXML
-    private Button hamburgerButton;
+    @FXML private Button inicioButton;
+    @FXML private Button productosButton;
+    @FXML private Button proveedoresButton;
+    @FXML private Button contabilidadButton;
+    @FXML private Button facturasButton;
+    @FXML private Button ajustesButton;
 
     private boolean isUserMenuVisible = false;
     private boolean isMenuExpanded = false;
+
+    @FXML
+    public void initialize() {
+        setButtonIcon(inicioButton, "fas-home");
+        setButtonIcon(productosButton, "fas-box-open");
+        setButtonIcon(proveedoresButton, "fas-truck");
+        setButtonIcon(contabilidadButton, "fas-chart-line");
+        setButtonIcon(facturasButton, "fas-file-invoice");
+        setButtonIcon(ajustesButton, "fas-cogs");
+        setButtonIcon(hamburgerButton, "fas-th");
+    }
+
+    private void setButtonIcon(Button button, String iconLiteral) {
+        FontIcon icon = new FontIcon(iconLiteral);
+        icon.setIconSize(18);
+        icon.setIconColor(javafx.scene.paint.Color.WHITE);
+        button.setGraphic(icon);
+    }
 
     @FXML
     private void toggleMenu() {
@@ -105,9 +121,8 @@ public class MainController {
         try {
             switch (view) {
                 case "Inicio":
-                    // Limpia el contenedor y recarga la vista principal
                     Parent root = FXMLLoader.load(getClass().getResource("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml"));
-                    contentPane.getScene().setRoot(root); // Reemplaza toda la escena con la nueva vista
+                    contentPane.getScene().setRoot(root);
                     break;
                 case "Productos":
                     contentPane.getChildren().setAll(new Label("Productos View - Add your content here"));

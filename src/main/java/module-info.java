@@ -10,6 +10,7 @@ module com.wirehec.front_wirehec {
     requires java.sql;
     requires java.net.http;
     requires com.google.gson;
+    requires org.kordamp.ikonli.javafx;
 
     opens com.wirehec.front_wirehec to javafx.fxml;
     exports com.wirehec.front_wirehec;

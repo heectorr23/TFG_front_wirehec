@@ -9,36 +9,12 @@
          <padding>
             <Insets top="10" left="10" right="10" bottom="10"/>
          </padding>
-         <Button fx:id="inicioButton" text="Inicio" onAction="#navigateToView" styleClass="menu-button">
-            <graphic>
-               <Region styleClass="menu-icon, home-icon"/>
-            </graphic>
-         </Button>
-         <Button fx:id="productosButton" text="Productos" onAction="#navigateToView" styleClass="menu-button">
-            <graphic>
-               <Region styleClass="menu-icon, products-icon"/>
-            </graphic>
-         </Button>
-         <Button fx:id="proveedoresButton" text="Proveedores" onAction="#navigateToView" styleClass="menu-button">
-            <graphic>
-               <Region styleClass="menu-icon, suppliers-icon"/>
-            </graphic>
-         </Button>
-         <Button fx:id="contabilidadButton" text="Contabilidad" onAction="#navigateToView" styleClass="menu-button">
-            <graphic>
-               <Region styleClass="menu-icon, accounting-icon"/>
-            </graphic>
-         </Button>
-         <Button fx:id="facturasButton" text="Facturas" onAction="#navigateToView" styleClass="menu-button">
-            <graphic>
-               <Region styleClass="menu-icon, invoices-icon"/>
-            </graphic>
-         </Button>
-         <Button fx:id="ajustesButton" text="Ajustes" onAction="#navigateToView" styleClass="menu-button">
-            <graphic>
-               <Region styleClass="menu-icon, settings-icon"/>
-            </graphic>
-         </Button>
+         <Button fx:id="inicioButton" text="Inicio" onAction="#navigateToView" styleClass="menu-button"/>
+         <Button fx:id="productosButton" text="Productos" onAction="#navigateToView" styleClass="menu-button"/>
+         <Button fx:id="proveedoresButton" text="Proveedores" onAction="#navigateToView" styleClass="menu-button"/>
+         <Button fx:id="contabilidadButton" text="Contabilidad" onAction="#navigateToView" styleClass="menu-button"/>
+         <Button fx:id="facturasButton" text="Facturas" onAction="#navigateToView" styleClass="menu-button"/>
+         <Button fx:id="ajustesButton" text="Ajustes" onAction="#navigateToView" styleClass="menu-button"/>
       </VBox>
    </left>
    <top>
@@ -46,11 +22,7 @@
          <padding>
             <Insets top="10" right="10" bottom="10" left="10"/>
          </padding>
-         <Button fx:id="hamburgerButton" styleClass="hamburger-button" onAction="#toggleMenu">
-            <graphic>
-               <Region fx:id="hamburgerIcon" styleClass="hamburger-icon"/>
-            </graphic>
-         </Button>
+         <Button fx:id="hamburgerButton" styleClass="menu-button" onAction="#toggleMenu"/>
          <Label fx:id="menuLabel" text="MENU" styleClass="menu-label" visible="false"/>
          <Region HBox.hgrow="ALWAYS"/>
          <Label text="DASHBOARD" styleClass="header-title"/>
