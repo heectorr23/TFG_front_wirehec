@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class FacturaDTO {
 
     private Long id;
-    private BigDecimal Precio;
-    private String Zona;
-    private String Direccion;
+    private BigDecimal precio;
+    private String zona;
+    private String direccion;
 }

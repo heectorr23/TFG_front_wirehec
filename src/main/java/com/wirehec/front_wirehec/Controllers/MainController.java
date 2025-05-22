@@ -1,18 +1,30 @@
 package com.wirehec.front_wirehec.Controllers;
 
+import com.wirehec.front_wirehec.APIs.BillApi.HTTP.Response.GetBIll;
+import com.wirehec.front_wirehec.APIs.CustomerAPI.HTTP.Response.GetCustomer;
+import com.wirehec.front_wirehec.APIs.ProductAPI.HTTP.Response.GetProduct;
+import com.wirehec.front_wirehec.APIs.SupplierAPI.HTTP.Response.GetSupplierOrder;
+import com.wirehec.front_wirehec.DTO.CustomerDTO;
+import com.wirehec.front_wirehec.DTO.FacturaDTO;
+import com.wirehec.front_wirehec.DTO.ProductDTO;
+import com.wirehec.front_wirehec.DTO.SupplierOrderDTO;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.List;
 
 public class MainController {
 
@@ -30,6 +42,34 @@ public class MainController {
     @FXML private Button facturasButton;
     @FXML private Button ajustesButton;
 
+    @FXML private TableView<FacturaDTO> billtable;
+    @FXML private TableColumn<FacturaDTO, Long> idColumn;
+    @FXML private TableColumn<FacturaDTO, BigDecimal> priceColumn;
+    @FXML private TableColumn<FacturaDTO, String> zoneColumn;
+    @FXML private TableColumn<FacturaDTO, String> directionColumn;
+
+    @FXML private TableView<SupplierOrderDTO> supplierordertable;
+    @FXML private TableColumn<SupplierOrderDTO, Long> idPedidoProveedorColumn;
+    @FXML private TableColumn<SupplierOrderDTO, Date> fechaPedidoColumn;
+    @FXML private TableColumn<SupplierOrderDTO, Date> fechaEntregaColumn;
+
+    @FXML private TableView<ProductDTO> productTable;
+    @FXML private TableColumn<ProductDTO, Long> idProductColumn;
+    @FXML private TableColumn<ProductDTO, String> nombreProductColumn;
+    @FXML private TableColumn<ProductDTO, String> categoriaProductColumn;
+    @FXML private TableColumn<ProductDTO, BigDecimal> precioVentaProductColumn;
+    @FXML private TableColumn<ProductDTO, Integer> stockProductColumn;
+    @FXML private TableColumn<ProductDTO, BigDecimal> precioCosteProductColumn;
+
+    @FXML private TableView<CustomerDTO> clientTable;
+    @FXML private TableColumn<CustomerDTO, String> nombreClienteColumn;
+    @FXML private TableColumn<CustomerDTO, String> contactoClienteColumn;
+    @FXML private TableColumn<CustomerDTO, Integer> telefonoClienteColumn;
+    @FXML private TableColumn<CustomerDTO, String> identificacionClienteColumn;
+    @FXML private TableColumn<CustomerDTO, String> emailClienteColumn;
+    @FXML private TableColumn<CustomerDTO, String> zonaClienteColumn;
+    @FXML private TableColumn<CustomerDTO, String> direccionClienteColumn;
+
     private boolean isUserMenuVisible = false;
     private boolean isMenuExpanded = false;
 
@@ -42,6 +82,52 @@ public class MainController {
         setButtonIcon(facturasButton, "fas-file-invoice");
         setButtonIcon(ajustesButton, "fas-cogs");
         setButtonIcon(hamburgerButton, "fas-th");
+
+        // Configurar columnas
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        zoneColumn.setCellValueFactory(new PropertyValueFactory<>("zona"));
+        directionColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+
+        idPedidoProveedorColumn.setCellValueFactory(new PropertyValueFactory<>("idPedidoProveedor"));
+        fechaPedidoColumn.setCellValueFactory(new PropertyValueFactory<>("fechaPedido"));
+        fechaEntregaColumn.setCellValueFactory(new PropertyValueFactory<>("fechaEntrega"));
+
+        idProductColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        nombreProductColumn.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
+        categoriaProductColumn.setCellValueFactory(new PropertyValueFactory<>("categoriaProducto"));
+        precioVentaProductColumn.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
+        stockProductColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        precioCosteProductColumn.setCellValueFactory(new PropertyValueFactory<>("precioCoste"));
+
+        nombreClienteColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        contactoClienteColumn.setCellValueFactory(new PropertyValueFactory<>("contacto"));
+        telefonoClienteColumn.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        identificacionClienteColumn.setCellValueFactory(new PropertyValueFactory<>("identificacion"));
+        emailClienteColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        zonaClienteColumn.setCellValueFactory(new PropertyValueFactory<>("zona"));
+        direccionClienteColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+
+        // Cargar datos
+        cargarDatos();
+    }
+
+    private void cargarDatos() {
+        GetBIll getBIll = new GetBIll();
+        List<FacturaDTO> billList = getBIll.sendGetBillRequest();
+        billtable.setItems(FXCollections.observableArrayList(billList));
+
+        GetSupplierOrder getSupplierOrder = new GetSupplierOrder();
+        List<SupplierOrderDTO> orderList = getSupplierOrder.sendGetSupplierOrderRequest();
+        supplierordertable.setItems(FXCollections.observableArrayList(orderList));
+
+        GetProduct getProduct = new GetProduct();
+        List<ProductDTO> productList = getProduct.sendGetProductRequest();
+        productTable.setItems(FXCollections.observableArrayList(productList));
+
+        GetCustomer getCustomer = new GetCustomer();
+        List<CustomerDTO> customerList = getCustomer.sendGetCustomerRequest();
+        clientTable.setItems(FXCollections.observableArrayList(customerList));
     }
 
     private void setButtonIcon(Button button, String iconLiteral) {
@@ -115,33 +201,8 @@ public class MainController {
     }
 
     @FXML
-    private void navigateToView() throws IOException {
-        Button source = (Button) menuVBox.getScene().getFocusOwner();
+    private void navigateToView(javafx.event.ActionEvent event) {
+        Button source = (Button) event.getSource();
         String view = source.getText();
-        try {
-            switch (view) {
-                case "Inicio":
-                    Parent root = FXMLLoader.load(getClass().getResource("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml"));
-                    contentPane.getScene().setRoot(root);
-                    break;
-                case "Productos":
-                    contentPane.getChildren().setAll(new Label("Productos View - Add your content here"));
-                    break;
-                case "Proveedores":
-                    contentPane.getChildren().setAll(new Label("Proveedores View - Add your content here"));
-                    break;
-                case "Contabilidad":
-                    contentPane.getChildren().setAll(new Label("Contabilidad View - Add your content here"));
-                    break;
-                case "Facturas":
-                    contentPane.getChildren().setAll(new Label("Facturas View - Add your content here"));
-                    break;
-                case "Ajustes":
-                    contentPane.getChildren().setAll(new Label("Ajustes View - Add your content here"));
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

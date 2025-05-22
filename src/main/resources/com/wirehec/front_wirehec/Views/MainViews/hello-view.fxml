@@ -36,7 +36,7 @@
       </HBox>
    </top>
    <center>
-      <GridPane fx:id="contentPane" hgap="10" vgap="10" alignment="CENTER" styleClass="content-panel">
+      <GridPane fx:id="contentPane" hgap="10" vgap="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml">
          <padding>
             <Insets top="20" left="20" right="20" bottom="20"/>
          </padding>
@@ -49,21 +49,60 @@
             <ColumnConstraints hgrow="ALWAYS"/>
          </columnConstraints>
          <children>
-            <VBox alignment="CENTER">
+            <!-- Facturas -->
+            <VBox alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="0">
                <Label text="Facturas Realizadas" styleClass="section-title"/>
-               <TableView styleClass="data-table"/>
+               <TableView fx:id="billtable" prefWidth="400" prefHeight="250">
+                  <columns>
+                     <TableColumn fx:id="idColumn" text="Id" prefWidth="100"/>
+                     <TableColumn fx:id="priceColumn" text="Precio" prefWidth="150"/>
+                     <TableColumn fx:id="zoneColumn" text="Zona" prefWidth="150"/>
+                     <TableColumn fx:id="directionColumn" text="Dirección" prefWidth="200"/>
+                  </columns>
+               </TableView>
             </VBox>
-            <VBox alignment="CENTER" GridPane.columnIndex="1">
-               <Label text="Pedidos por Llegar" styleClass="section-title"/>
-               <TableView styleClass="data-table"/>
+
+            <!-- Pedidos por llegar -->
+            <VBox alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="1">
+               <Label text="Pedidos Por Llegar" styleClass="section-title"/>
+               <TableView fx:id="supplierordertable" prefWidth="400" prefHeight="250">
+                  <columns>
+                     <TableColumn fx:id="idPedidoProveedorColumn" text="Id" prefWidth="100"/>
+                     <TableColumn fx:id="fechaPedidoColumn" text="Fecha Pedido" prefWidth="150"/>
+                     <TableColumn fx:id="fechaEntregaColumn" text="Fecha Entrega" prefWidth="150"/>
+                  </columns>
+               </TableView>
             </VBox>
-            <VBox alignment="CENTER" GridPane.rowIndex="1">
+
+            <!-- Productos en stock -->
+            <VBox alignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="0">
                <Label text="Productos en Stock" styleClass="section-title"/>
-               <TableView styleClass="data-table"/>
+               <TableView fx:id="productTable" prefWidth="400" prefHeight="250">
+                  <columns>
+                     <TableColumn fx:id="idProductColumn" text="Id" prefWidth="100"/>
+                     <TableColumn fx:id="nombreProductColumn" text="Nombre" prefWidth="150"/>
+                     <TableColumn fx:id="categoriaProductColumn" text="Categoría" prefWidth="150"/>
+                     <TableColumn fx:id="precioVentaProductColumn" text="Precio de Venta" prefWidth="150"/>
+                     <TableColumn fx:id="stockProductColumn" text="Stock" prefWidth="150"/>
+                     <TableColumn fx:id="precioCosteProductColumn" text="Precio Coste" prefWidth="150"/>
+                  </columns>
+               </TableView>
             </VBox>
-            <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+
+            <!-- Clientes -->
+            <VBox alignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="1">
                <Label text="Clientes" styleClass="section-title"/>
-               <TableView styleClass="data-table"/>
+               <TableView fx:id="clientTable" prefWidth="400" prefHeight="250">
+                  <columns>
+                     <TableColumn fx:id="nombreClienteColumn" text="Nombre" prefWidth="100"/>
+                     <TableColumn fx:id="contactoClienteColumn" text="Contacto" prefWidth="150"/>
+                     <TableColumn fx:id="telefonoClienteColumn" text="Teléfono" prefWidth="150"/>
+                     <TableColumn fx:id="identificacionClienteColumn" text="Identificación" prefWidth="150"/>
+                     <TableColumn fx:id="emailClienteColumn" text="Email" prefWidth="150"/>
+                     <TableColumn fx:id="zonaClienteColumn" text="Zona" prefWidth="150"/>
+                     <TableColumn fx:id="direccionClienteColumn" text="Dirección" prefWidth="150"/>
+                  </columns>
+               </TableView>
             </VBox>
          </children>
       </GridPane>

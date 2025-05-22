@@ -22,7 +22,7 @@ public class GetBIll {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://localhost:8080/api/bill/all"))
+                    .uri(URI.create("http://localhost:8080/api/bill/all"))
                     .GET()
                     .build();
 
@@ -37,9 +37,9 @@ public class GetBIll {
                 JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
                 FacturaDTO facturaDTO = new FacturaDTO();
                 facturaDTO.setId(jsonObject.get("id").getAsLong());
-                facturaDTO.setPrecio(jsonObject.get("Precio").getAsBigDecimal());
-                facturaDTO.setZona(jsonObject.get("Zona").getAsString());
-                facturaDTO.setDireccion(jsonObject.get("Direccion").getAsString());
+                facturaDTO.setPrecio(jsonObject.get("precio").getAsBigDecimal());
+                facturaDTO.setZona(jsonObject.get("zona").getAsString());
+                facturaDTO.setDireccion(jsonObject.get("direccion").getAsString());
                 facturaList.add(facturaDTO);
             }
         } catch (Exception e) {

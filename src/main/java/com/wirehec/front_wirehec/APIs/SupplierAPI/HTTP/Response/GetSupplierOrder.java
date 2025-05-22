@@ -3,7 +3,6 @@ package com.wirehec.front_wirehec.APIs.SupplierAPI.HTTP.Response;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.wirehec.front_wirehec.APIs.BillApi.HTTP.Response.GetBIll;
 import com.wirehec.front_wirehec.DTO.SupplierOrderDTO;
 
 import java.net.URI;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class GetSupplierOrder {
-    private static final Logger LOGGER = Logger.getLogger(GetBIll.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GetSupplierOrder.class.getName());
 
     public List<SupplierOrderDTO> sendGetSupplierOrderRequest() {
         List<SupplierOrderDTO> supplierOrderList = new ArrayList<>();
@@ -24,7 +23,7 @@ public class GetSupplierOrder {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://localhost:8080/api/orderSupplier/all"))
+                    .uri(URI.create("http://localhost:8086/api/orderSupplier/all"))
                     .GET()
                     .build();
 
