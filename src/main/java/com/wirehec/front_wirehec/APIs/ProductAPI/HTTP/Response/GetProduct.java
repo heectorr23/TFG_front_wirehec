@@ -23,7 +23,7 @@ public class GetProduct {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://localhost:8080/api/product/all"))
+                    .uri(URI.create("http://localhost:8080/api/product/all"))
                     .GET()
                     .build();
 
@@ -43,6 +43,7 @@ public class GetProduct {
                 productDTO.setPrecioVenta(jsonObject.get("precioVenta").getAsBigDecimal());
                 productDTO.setStock(jsonObject.get("stock").getAsInt());
                 productDTO.setPrecioCoste(jsonObject.get("precioCoste").getAsBigDecimal());
+                productList.add(productDTO);
             }
         } catch (Exception e) {
             LOGGER.severe("Error al enviar la solicitud: " + e.getMessage());

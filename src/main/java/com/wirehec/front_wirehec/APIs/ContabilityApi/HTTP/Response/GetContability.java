@@ -23,7 +23,7 @@ public class GetContability {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://localhost:8080/api/contability/all"))
+                    .uri(URI.create("http://localhost:8080/api/contability/all"))
                     .GET()
                     .build();
 

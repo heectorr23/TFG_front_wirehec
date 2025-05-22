@@ -12,7 +12,7 @@ public class SupplierOrderDTO {
 
     private Long  idPedidoProveedor;
 
-    private Date FechaPedido;
+    private Date fechaPedido;
 
-    private Date FechaEntrega;
+    private Date fechaEntrega;
 }

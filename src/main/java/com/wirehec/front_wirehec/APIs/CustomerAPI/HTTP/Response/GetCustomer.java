@@ -24,7 +24,7 @@ public class GetCustomer {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://localhost:8080/api/customer/all"))
+                    .uri(URI.create("http://localhost:8080/api/customer/all"))
                     .GET()
                     .build();
 
@@ -45,6 +45,7 @@ public class GetCustomer {
                 customerDTO.setEmail(jsonObject.get("email").getAsString());
                 customerDTO.setZona(jsonObject.get("zona").getAsString());
                 customerDTO.setDireccion(jsonObject.get("direccion").getAsString());
+                customerList.add(customerDTO);
             }
         } catch (Exception e) {
             LOGGER.severe("Error al enviar la solicitud: " + e.getMessage());
