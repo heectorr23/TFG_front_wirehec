@@ -23,7 +23,7 @@ public class GetSupplier {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://localhost:8080/api/supplier/all"))
+                    .uri(URI.create("http://localhost:8086/api/supplier/all"))
                     .GET()
                     .build();
 
@@ -32,17 +32,18 @@ public class GetSupplier {
             LOGGER.info("Codigo de estado: " + response.statusCode());
             LOGGER.info("Respuesta de la API: " + response.body());
 
-            JsonArray jsonArray = JsonParser.parseString(response.body()).getAsJsonArray();;
+            JsonArray jsonArray = JsonParser.parseString(response.body()).getAsJsonArray();
 
             for (int i = 0; i < jsonArray.size(); i++) {
                 JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-                SupplierDTO productDTO = new SupplierDTO();
-                productDTO.setIdProveedor(jsonObject.get("idProveedor").getAsLong());
-                productDTO.setNombreProveedor(jsonObject.get("nombreProveedor").getAsString());
-                productDTO.setCifProveedor(jsonObject.get("cifProveedor").getAsInt());
-                productDTO.setEmailProveedor(jsonObject.get("emailProveedor").getAsString());
-                productDTO.setCategoriaProveedor(jsonObject.get("categoriaProveedor").getAsString());
-                productDTO.setProductoProveedor(jsonObject.get("productoProveedor").getAsString());
+                SupplierDTO supplierDTO = new SupplierDTO();
+                supplierDTO.setIdProveedor(jsonObject.get("idProveedor").getAsLong());
+                supplierDTO.setNombreProveedor(jsonObject.get("nombreProveedor").getAsString());
+                supplierDTO.setCifProveedor(jsonObject.get("cifProveedor").getAsInt());
+                supplierDTO.setEmailProveedor(jsonObject.get("emailProveedor").getAsString());
+                supplierDTO.setCategoriaProveedor(jsonObject.get("categoriaProveedor").getAsString());
+                supplierDTO.setProductoProveedor(jsonObject.get("productoProveedor").getAsString());
+                supplierList.add(supplierDTO);
             }
         } catch (Exception e) {
             LOGGER.severe("Error al enviar la solicitud: " + e.getMessage());

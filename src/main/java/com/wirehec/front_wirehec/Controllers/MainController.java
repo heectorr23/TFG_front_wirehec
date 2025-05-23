@@ -11,17 +11,25 @@ import com.wirehec.front_wirehec.DTO.SupplierOrderDTO;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
@@ -75,6 +83,13 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        System.out.println("inicioButton: " + inicioButton);
+        System.out.println("productosButton: " + productosButton);
+        System.out.println("proveedoresButton: " + proveedoresButton);
+        System.out.println("contabilidadButton: " + contabilidadButton);
+        System.out.println("facturasButton: " + facturasButton);
+        System.out.println("ajustesButton: " + ajustesButton);
+
         setButtonIcon(inicioButton, "fas-home");
         setButtonIcon(productosButton, "fas-box-open");
         setButtonIcon(proveedoresButton, "fas-truck");
@@ -131,6 +146,10 @@ public class MainController {
     }
 
     private void setButtonIcon(Button button, String iconLiteral) {
+        if (button == null) {
+            System.err.println("El botón es null: " + iconLiteral);
+            return;
+        }
         FontIcon icon = new FontIcon(iconLiteral);
         icon.setIconSize(18);
         icon.setIconColor(javafx.scene.paint.Color.WHITE);
@@ -201,8 +220,33 @@ public class MainController {
     }
 
     @FXML
-    private void navigateToView(javafx.event.ActionEvent event) {
-        Button source = (Button) event.getSource();
-        String view = source.getText();
+    public void navigateToInicio(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml");
+    }
+
+    public void navigateToProductos(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/Product-SupplierViews/ProductSupplier-View.fxml");
+    }
+    public void navigateToContabilidad(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/AccountingViews/Accounting-View.fxml");
+    }
+    public void navigateToFacturas(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-View.fxml");
+    }
+    public void navigateToAjustes(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
+    }
+
+    private void changeScene(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(MainController.class.getResource(fxmlPath));
+            Parent root = loader.load();
+
+            // Obtener el Stage actual y reemplazar la escena
+            Stage stage = (Stage) contentPane.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

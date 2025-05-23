@@ -9,12 +9,11 @@
          <padding>
             <Insets top="10" left="10" right="10" bottom="10"/>
          </padding>
-         <Button fx:id="inicioButton" text="Inicio" onAction="#navigateToView" styleClass="menu-button"/>
-         <Button fx:id="productosButton" text="Productos" onAction="#navigateToView" styleClass="menu-button"/>
-         <Button fx:id="proveedoresButton" text="Proveedores" onAction="#navigateToView" styleClass="menu-button"/>
-         <Button fx:id="contabilidadButton" text="Contabilidad" onAction="#navigateToView" styleClass="menu-button"/>
-         <Button fx:id="facturasButton" text="Facturas" onAction="#navigateToView" styleClass="menu-button"/>
-         <Button fx:id="ajustesButton" text="Ajustes" onAction="#navigateToView" styleClass="menu-button"/>
+         <Button fx:id="inicioButton" text="Inicio" onAction="#navigateToInicio" styleClass="menu-button"/>
+         <Button fx:id="productosButton" text="Productos" onAction="#navigateToProductos" styleClass="menu-button"/>
+         <Button fx:id="contabilidadButton" text="Contabilidad" onAction="#navigateToContabilidad" styleClass="menu-button"/>
+         <Button fx:id="facturasButton" text="Facturas" onAction="#navigateToFacturas" styleClass="menu-button"/>
+         <Button fx:id="ajustesButton" text="Ajustes" onAction="#navigateToAjustes" styleClass="menu-button"/>
       </VBox>
    </left>
    <top>
