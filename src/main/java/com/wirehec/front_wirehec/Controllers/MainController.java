@@ -223,7 +223,6 @@ public class MainController {
     public void navigateToInicio(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml");
     }
-
     public void navigateToProductos(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/Product-SupplierViews/ProductSupplier-View.fxml");
     }
@@ -231,7 +230,7 @@ public class MainController {
         changeScene("/com/wirehec/front_wirehec/Views/AccountingViews/Accounting-View.fxml");
     }
     public void navigateToFacturas(ActionEvent event) {
-        changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-View.fxml");
+        changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
     }
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
