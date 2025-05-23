@@ -219,7 +219,7 @@ public class ProductSupplierController {
 
     @FXML
     public void navigateToFacturas(ActionEvent event) {
-        changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-View.fxml");
+        changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
     }
 
     @FXML
