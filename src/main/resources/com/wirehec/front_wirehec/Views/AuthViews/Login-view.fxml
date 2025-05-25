@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.wirehec.front_wirehec.Views.AuthViews.LoginView"
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.wirehec.front_wirehec.Controllers.LoginController"
             prefHeight="400.0" prefWidth="600.0">
+    <VBox alignment="CENTER" spacing="20" layoutX="100" layoutY="50">
+        <Label text="Inicio de Sesión" styleClass="header-title"/>
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="10" left="10" right="10" bottom="10"/>
+            </padding>
+            <Label text="Nombre de Usuario:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
+            <Label text="Contraseña:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        </GridPane>
+        <Button fx:id="loginButton" text="Iniciar Sesión" onAction="#handleLogin" styleClass="primary-button"/>
+    </VBox>
 </AnchorPane>
