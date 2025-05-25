@@ -41,6 +41,7 @@ public class GetContability {
                 contabilityDTO.setPresupuestomensual(jsonObject.get("presupuestomensual").getAsFloat());
                 contabilityDTO.setBeneficio(jsonObject.get("beneficio").getAsFloat());
                 contabilityDTO.setGasto(jsonObject.get("gasto").getAsFloat());
+                contabilityList.add(contabilityDTO);
             }
         } catch (Exception e) {
             LOGGER.severe("Error al enviar la solicitud: " + e.getMessage());

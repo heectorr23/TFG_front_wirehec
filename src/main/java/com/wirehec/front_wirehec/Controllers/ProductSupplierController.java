@@ -214,7 +214,7 @@ public class ProductSupplierController {
 
     @FXML
     public void navigateToContabilidad(ActionEvent event) {
-        changeScene("/com/wirehec/front_wirehec/Views/AccountingViews/Accounting-View.fxml");
+        changeScene("/com/wirehec/front_wirehec/Views/ContabilityViews/Contability-view.fxml");
     }
 
     @FXML
