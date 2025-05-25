@@ -51,10 +51,6 @@ public class PostRegisterUser {
         }
     }
 
-    public static void setToken(String jwtToken) {
-        token = jwtToken;
-    }
-
     private static class RegisterUserDTOTypeAdapter implements JsonSerializer<RegisterUserDTO> {
         @Override
         public JsonElement serialize(RegisterUserDTO registerUserDTO, Type type, JsonSerializationContext context) {
