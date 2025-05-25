@@ -180,7 +180,7 @@ public class BillController {
         changeScene("/com/wirehec/front_wirehec/Views/Product-SupplierViews/ProductSupplier-View.fxml");
     }
     public void navigateToContabilidad(ActionEvent event) {
-        changeScene("/com/wirehec/front_wirehec/Views/AccountingViews/Accounting-View.fxml");
+        changeScene("/com/wirehec/front_wirehec/Views/ContabilityViews/Contability-view.fxml");
     }
     @FXML
     public void navigateToFacturas(ActionEvent event) {
