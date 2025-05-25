@@ -48,6 +48,7 @@ public class MainController {
     @FXML private Button proveedoresButton;
     @FXML private Button contabilidadButton;
     @FXML private Button facturasButton;
+    @FXML private Button empleadosButton;
     @FXML private Button ajustesButton;
 
     @FXML private TableView<FacturaDTO> billtable;
@@ -88,6 +89,7 @@ public class MainController {
         System.out.println("proveedoresButton: " + proveedoresButton);
         System.out.println("contabilidadButton: " + contabilidadButton);
         System.out.println("facturasButton: " + facturasButton);
+        setButtonIcon(empleadosButton, "fas-user-tie");
         System.out.println("ajustesButton: " + ajustesButton);
 
         setButtonIcon(inicioButton, "fas-home");
@@ -231,6 +233,10 @@ public class MainController {
     }
     public void navigateToFacturas(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
+    }
+    @FXML
+    public void navigateToEmpleados(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/EmployeeViews/Employee-view.fxml");
     }
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");

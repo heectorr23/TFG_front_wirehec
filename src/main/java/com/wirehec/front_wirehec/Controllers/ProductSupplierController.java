@@ -43,6 +43,7 @@ public class ProductSupplierController {
     @FXML private Button productosButton;
     @FXML private Button contabilidadButton;
     @FXML private Button facturasButton;
+    @FXML private Button empleadosButton;
     @FXML private Button ajustesButton;
 
     @FXML private TableView<ProductDTO> productTable;
@@ -77,6 +78,7 @@ public class ProductSupplierController {
         setButtonIcon(productosButton, "fas-box-open");
         setButtonIcon(contabilidadButton, "fas-chart-line");
         setButtonIcon(facturasButton, "fas-file-invoice");
+        setButtonIcon(empleadosButton, "fas-user-tie");
         setButtonIcon(ajustesButton, "fas-cogs");
         setButtonIcon(hamburgerButton, "fas-th");
 
@@ -221,7 +223,10 @@ public class ProductSupplierController {
     public void navigateToFacturas(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
     }
-
+    @FXML
+    public void navigateToEmpleados(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/EmployeeViews/Employee-view.fxml");
+    }
     @FXML
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");

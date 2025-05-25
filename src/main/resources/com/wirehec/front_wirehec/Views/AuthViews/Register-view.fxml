@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.wirehec.front_wirehec.Views.AuthViews.RegisterView"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.wirehec.front_wirehec.Controllers.RegisterController"
+            prefHeight="600.0" prefWidth="800.0">
+    <VBox alignment="CENTER" spacing="10" prefWidth="600" layoutX="100" layoutY="50">
+        <Label text="Registro de Usuario" styleClass="header-title"/>
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="10" left="10" right="10" bottom="10"/>
+            </padding>
+            <Label text="Nombre de Usuario:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
+            <Label text="Contraseña:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="emailField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Rol:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="roleComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Beneficio:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="beneficioField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="Salario:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="salarioField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <Label text="Teléfono:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="telefonoField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+            <Label text="Fecha de Entrada:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="fechaEntradaPicker" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+            <Label text="Hora de Entrada:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+            <TextField fx:id="horaEntradaField" promptText="HH:mm" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+            <Label text="Fecha de Salida:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="fechaSalidaPicker" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+            <Label text="Hora de Salida:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+            <TextField fx:id="horaSalidaField" promptText="HH:mm" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+            <Label text="NIF:" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+            <TextField fx:id="nifField" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+
+            <Label text="Nombre Completo:" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+            <TextField fx:id="nombreField" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
+        </GridPane>
+        <Button fx:id="registerButton" text="Registrar" onAction="#handleRegister" styleClass="primary-button"/>
+        <Button fx:id="goToLoginButton" text="Ir a Login" onAction="#navigateToLogin" styleClass="secondary-button"/>
+    </VBox>
 </AnchorPane>
