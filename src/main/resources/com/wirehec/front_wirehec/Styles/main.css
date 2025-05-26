@@ -63,4 +63,27 @@
     -fx-font-family: "Arial";
     -fx-font-size: 14px;
 }
+.user-button {
+    -fx-background-color: #3498db; /* Azul actual */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.user-button:hover {
+    -fx-background-color: #2980b9; /* Azul más oscuro al pasar el mouse */
+}
+
+.user-role-label {
+    -fx-text-fill: #555; /* Mantener el texto blanco */
+    -fx-font-size: 12px;
+    -fx-font-style: italic;
+    -fx-padding: 5px 0 0 0;
+    -fx-alignment: center;
+}
+
+
 

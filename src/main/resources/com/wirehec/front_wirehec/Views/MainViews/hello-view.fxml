@@ -33,6 +33,7 @@
             <Button text="Mi Perfil" onAction="#handleUserAction"/>
             <Button text="Cerrar Sesión" onAction="#handleUserAction"/>
          </VBox>
+         <Label fx:id="userRoleLabel" text="Rol" styleClass="user-role-label" visible="true"/>
       </HBox>
    </top>
    <center>

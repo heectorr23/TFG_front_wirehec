@@ -20,5 +20,6 @@
             <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
         </GridPane>
         <Button fx:id="loginButton" text="Iniciar Sesión" onAction="#handleLogin" styleClass="primary-button"/>
+        <Button fx:id="goToRegisterButton" text="Ir a Registro" onAction="#navigateToRegister" styleClass="secondary-button"/>
     </VBox>
 </AnchorPane>
