@@ -12,6 +12,7 @@ module com.wirehec.front_wirehec {
     requires org.kordamp.bootstrapfx.core;
     requires static lombok;
     requires java.sql;
+    requires com.auth0.jwt;
 
     opens com.wirehec.front_wirehec to javafx.fxml;
     opens com.wirehec.front_wirehec.DTO to javafx.base;
