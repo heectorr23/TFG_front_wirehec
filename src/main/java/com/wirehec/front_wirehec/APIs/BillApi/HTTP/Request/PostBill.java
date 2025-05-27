@@ -1,9 +1,10 @@
 package com.wirehec.front_wirehec.APIs.BillApi.HTTP.Request;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wirehec.front_wirehec.DTO.Adapters.FacturaDTOTypeAdapter;
 import com.wirehec.front_wirehec.DTO.FacturaDTO;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -37,17 +38,6 @@ public class PostBill {
         } catch (Exception e) {
             LOGGER.severe("Error al enviar solicitud POST: " + e.getMessage());
             e.printStackTrace();
-        }
-    }
-
-    private static class FacturaDTOTypeAdapter implements JsonSerializer<FacturaDTO> {
-        @Override
-        public JsonElement serialize(FacturaDTO facturaDTO, Type type, JsonSerializationContext context) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("Precio", facturaDTO.getPrecio());
-            jsonObject.addProperty("Zona", facturaDTO.getZona());
-            jsonObject.addProperty("Direccion", facturaDTO.getDireccion());
-            return jsonObject;
         }
     }
 }

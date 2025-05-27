@@ -52,6 +52,12 @@
             <children>
                 <!-- Tabla de facturas -->
                 <VBox alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <HBox alignment="CENTER" spacing="10" styleClass="crud-buttons">
+                        <Button text="Añadir" onAction="#handleAddBill" styleClass="crud-button"/>
+                        <Button text="Actualizar" onAction="#handleUpdateBill" styleClass="crud-button"/>
+                        <Button text="Eliminar" onAction="#handleDeleteBill" styleClass="crud-button"/>
+                        <Button text="Ver Detalles" onAction="#handleViewBill" styleClass="crud-button"/>
+                    </HBox>
                     <Label text="Facturas" styleClass="section-title"/>
                     <TableView fx:id="billTable" prefWidth="400" prefHeight="250">
                         <columns>

@@ -1,5 +1,6 @@
 package com.wirehec.front_wirehec.Controllers;
 
+import com.wirehec.front_wirehec.APIs.BillApi.HTTP.Request.DeleteBill;
 import com.wirehec.front_wirehec.APIs.BillApi.HTTP.Response.GetBIll;
 import com.wirehec.front_wirehec.Constants.TokenConstants;
 import com.wirehec.front_wirehec.DTO.FacturaDTO;
@@ -17,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -57,13 +59,6 @@ public class BillController {
 
     @FXML
     public void initialize() {
-        System.out.println("inicioButton: " + inicioButton);
-        System.out.println("productosButton: " + productosButton);
-        System.out.println("proveedoresButton: " + proveedoresButton);
-        System.out.println("contabilidadButton: " + contabilidadButton);
-        System.out.println("facturasButton: " + facturasButton);
-        System.out.println("ajustesButton: " + ajustesButton);
-
         setButtonIcon(inicioButton, "fas-home");
         setButtonIcon(productosButton, "fas-box-open");
         setButtonIcon(proveedoresButton, "fas-truck");
@@ -73,33 +68,32 @@ public class BillController {
         setButtonIcon(ajustesButton, "fas-cogs");
         setButtonIcon(hamburgerButton, "fas-th");
 
-        // Configurar columnas de la tabla de facturas
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("precio"));
         zoneColumn.setCellValueFactory(new PropertyValueFactory<>("zona"));
         directionColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
 
-        // Cargar datos
         cargarDatos();
         String token = TokenConstants.TOKEN;
         if (token != null && !token.isEmpty()) {
             String userName = TokenUtils.getUserNameFromToken(token);
             String userRole = TokenUtils.getUserRoleFromToken(token);
             userDropdown.setText(userName);
-            userRoleLabel.setText(userRole); // Actualizar la etiqueta con el rol del usuario
+            userRoleLabel.setText(userRole);
         }
     }
 
     private void cargarDatos() {
-        // Obtener datos de facturas desde la API
         GetBIll getBIll = new GetBIll();
         List<FacturaDTO> billList = getBIll.sendGetBillRequest();
         billTable.setItems(FXCollections.observableArrayList(billList));
 
-        // Configurar gráfico de distribución de facturas por zona
         billDistributionChart.setData(FXCollections.observableArrayList(
                 billList.stream()
-                        .collect(Collectors.groupingBy(FacturaDTO::getZona, Collectors.counting()))
+                        .collect(Collectors.groupingBy(
+                                factura -> factura.getZona() == null ? "Sin Zona" : factura.getZona(),
+                                Collectors.counting()
+                        ))
                         .entrySet()
                         .stream()
                         .map(entry -> new PieChart.Data(entry.getKey(), entry.getValue()))
@@ -152,6 +146,7 @@ public class BillController {
         };
         transition.play();
     }
+
     @FXML
     private void handleUserAction(ActionEvent event) {
         Button source = (Button) event.getSource();
@@ -164,15 +159,90 @@ public class BillController {
                 System.out.println("Redirigir a la página de perfil");
                 break;
             case "Cerrar Sesión":
-                // Restablecer el token
                 TokenConstants.TOKEN = null;
-
-                // Navegar a la vista de login
                 navigateToLogin(null);
                 break;
             default:
                 System.out.println("Acción no reconocida: " + action);
         }
+    }
+
+    @FXML
+    private void handleAddBill() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/BillViews/AddBill-view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Añadir Factura");
+            stage.setScene(new Scene(root, 600, 400));
+            stage.setMinWidth(600);
+            stage.setMinHeight(400);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleUpdateBill() {
+        FacturaDTO selectedBill = billTable.getSelectionModel().getSelectedItem();
+        if (selectedBill == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Factura", "Por favor, selecciona una factura para actualizar.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/BillViews/UpdateBill-view.fxml"));
+            Parent root = loader.load();
+
+            UpdateBillController controller = loader.getController();
+            controller.setBillData(selectedBill);
+
+            Stage stage = new Stage();
+            stage.setTitle("Actualizar Factura");
+            stage.setScene(new Scene(root, 600, 400));
+            stage.setMinWidth(600);
+            stage.setMinHeight(400);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteBill() {
+        FacturaDTO selectedBill = billTable.getSelectionModel().getSelectedItem();
+        if (selectedBill == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Factura", "Por favor, selecciona una factura para eliminar.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar esta factura?", ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirmar Eliminación");
+        confirmation.showAndWait();
+
+        if (confirmation.getResult() == ButtonType.YES) {
+            new DeleteBill().sendDeleteBillRequest(selectedBill);
+            cargarDatos();
+        }
+    }
+
+    @FXML
+    private void handleViewBill() {
+        FacturaDTO selectedBill = billTable.getSelectionModel().getSelectedItem();
+        if (selectedBill == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Factura", "Por favor, selecciona una factura para ver los detalles.");
+            return;
+        }
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles de la Factura", selectedBill.toString());
     }
 
     @FXML
@@ -189,16 +259,20 @@ public class BillController {
     public void navigateToInicio(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml");
     }
+
     public void navigateToProductos(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/Product-SupplierViews/ProductSupplier-View.fxml");
     }
+
     public void navigateToContabilidad(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/ContabilityViews/Contability-view.fxml");
     }
+
     @FXML
     public void navigateToFacturas(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
     }
+
     @FXML
     public void navigateToEmpleados(ActionEvent event) {
         String userRole = TokenUtils.getUserRoleFromToken(TokenConstants.TOKEN);
@@ -208,6 +282,7 @@ public class BillController {
         }
         changeScene("/com/wirehec/front_wirehec/Views/EmployeeViews/Employee-view.fxml");
     }
+
     private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -215,9 +290,11 @@ public class BillController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
     }
+
     public void navigateToLogin(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/AuthViews/Login-view.fxml");
     }
@@ -227,10 +304,9 @@ public class BillController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            // Obtener el Stage actual y reemplazar la escena
             Stage stage = (Stage) contentPane.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.show(); // Asegúrate de mostrar la nueva escena
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error al cargar la vista: " + fxmlPath);
