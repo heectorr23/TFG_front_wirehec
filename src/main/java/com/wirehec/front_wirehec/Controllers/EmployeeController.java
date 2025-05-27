@@ -1,7 +1,9 @@
 package com.wirehec.front_wirehec.Controllers;
 
 import com.wirehec.front_wirehec.APIs.EmployeeAPI.HTTP.Response.GetEmployee;
+import com.wirehec.front_wirehec.Constants.TokenConstants;
 import com.wirehec.front_wirehec.DTO.EmployeeDTO;
+import com.wirehec.front_wirehec.Utils.TokenUtils;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
 import javafx.collections.FXCollections;
@@ -10,10 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -32,6 +31,7 @@ public class EmployeeController {
     @FXML private GridPane contentPane;
     @FXML private Label menuLabel;
     @FXML private Button hamburgerButton;
+    @FXML private Label userRoleLabel;
 
     @FXML private Button inicioButton;
     @FXML private Button productosButton;
@@ -65,6 +65,13 @@ public class EmployeeController {
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
 
         loadEmployees();
+        String token = TokenConstants.TOKEN;
+        if (token != null && !token.isEmpty()) {
+            String userName = TokenUtils.getUserNameFromToken(token);
+            String userRole = TokenUtils.getUserRoleFromToken(token);
+            userDropdown.setText(userName);
+            userRoleLabel.setText(userRole); // Actualizar la etiqueta con el rol del usuario
+        }
     }
 
     private void loadEmployees() {
@@ -141,7 +148,10 @@ public class EmployeeController {
                 System.out.println("Redirigir a la página de perfil");
                 break;
             case "Cerrar Sesión":
-                System.out.println("Cerrar sesión");
+                TokenConstants.TOKEN = null;
+
+                // Navegar a la vista de login
+                navigateToLogin(null);
                 break;
             default:
                 System.out.println("Acción no reconocida: " + action);
@@ -169,13 +179,27 @@ public class EmployeeController {
     }
     @FXML
     public void navigateToEmpleados(ActionEvent event) {
+        String userRole = TokenUtils.getUserRoleFromToken(TokenConstants.TOKEN);
+        if (!"ROLE_BOSS".equals(userRole)) {
+            showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "No tienes permiso para acceder a esta vista.");
+            return;
+        }
         changeScene("/com/wirehec/front_wirehec/Views/EmployeeViews/Employee-view.fxml");
+    }
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
     @FXML
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
     }
-
+    public void navigateToLogin(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/AuthViews/Login-view.fxml");
+    }
     private void changeScene(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));

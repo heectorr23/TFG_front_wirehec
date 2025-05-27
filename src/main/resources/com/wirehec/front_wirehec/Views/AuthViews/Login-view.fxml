@@ -6,20 +6,20 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.wirehec.front_wirehec.Controllers.LoginController"
-            prefHeight="400.0" prefWidth="600.0">
-    <VBox alignment="CENTER" spacing="20" layoutX="100" layoutY="50">
-        <Label text="Inicio de Sesión" styleClass="header-title"/>
+            prefHeight="400.0" prefWidth="600.0" styleClass="auth-background" stylesheets="@../../Styles/main.css">
+    <VBox alignment="CENTER" spacing="20" layoutX="100" layoutY="50" styleClass="auth-container">
+        <Label text="Inicio de Sesión" styleClass="auth-title"/>
         <GridPane hgap="10" vgap="10">
             <padding>
                 <Insets top="10" left="10" right="10" bottom="10"/>
             </padding>
-            <Label text="Nombre de Usuario:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Nombre de Usuario:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="auth-label"/>
+            <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="auth-input"/>
 
-            <Label text="Contraseña:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="Contraseña:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="auth-label"/>
+            <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="auth-input"/>
         </GridPane>
-        <Button fx:id="loginButton" text="Iniciar Sesión" onAction="#handleLogin" styleClass="primary-button"/>
-        <Button fx:id="goToRegisterButton" text="Ir a Registro" onAction="#navigateToRegister" styleClass="secondary-button"/>
+        <Button fx:id="loginButton" text="Iniciar Sesión" onAction="#handleLogin" styleClass="auth-primary-button"/>
+        <Button fx:id="goToRegisterButton" text="Ir a Registro" onAction="#navigateToRegister" styleClass="auth-secondary-button"/>
     </VBox>
 </AnchorPane>
