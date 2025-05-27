@@ -1,7 +1,5 @@
 package com.wirehec.front_wirehec.APIs.EmployeeAPI.HTTP.Request;
 
-import com.wirehec.front_wirehec.APIs.BillApi.HTTP.Request.DeleteBill;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -9,7 +7,7 @@ import java.net.http.HttpResponse;
 import java.util.logging.Logger;
 
 public class DeleteEmployee {
-    private static final Logger LOGGER = Logger.getLogger(DeleteBill.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DeleteEmployee.class.getName());
 
     public void sendDeleteEmployeeRequest(Long id) {
         try {

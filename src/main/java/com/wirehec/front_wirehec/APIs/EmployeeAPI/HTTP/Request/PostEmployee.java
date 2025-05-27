@@ -49,18 +49,26 @@ public class PostEmployee {
             jsonObject.addProperty("nifEmpleado", employeeDTO.getNifEmpleado());
             jsonObject.addProperty("telefonoEmpleado", employeeDTO.getTelefonoEmpleado());
             jsonObject.addProperty("email", employeeDTO.getEmail());
+
+            // Validar que username no sea null
+            if (employeeDTO.getUsername() == null || employeeDTO.getUsername().isEmpty()) {
+                throw new IllegalArgumentException("El campo 'username' no puede ser null o vacío.");
+            }
             jsonObject.addProperty("username", employeeDTO.getUsername());
+
             jsonObject.addProperty("passwordEmpleado", employeeDTO.getPasswordEmpleado());
             jsonObject.addProperty("beneficioEmpleado", employeeDTO.getBeneficioEmpleado());
             jsonObject.addProperty("horaEntrada", employeeDTO.getHoraEntrada().toString());
             jsonObject.addProperty("horaSalida", employeeDTO.getHoraSalida().toString());
             jsonObject.addProperty("salario", employeeDTO.getSalario().toString());
+
             JsonArray rolesArray = new JsonArray();
             for (RoleDTO role : employeeDTO.getRoles()) {
                 JsonObject roleObject = new JsonObject();
-                roleObject.addProperty("Name", role.getName());
+                roleObject.addProperty("name", role.getName());
                 rolesArray.add(roleObject);
             }
+            jsonObject.add("roles", rolesArray);
             return jsonObject;
         }
     }

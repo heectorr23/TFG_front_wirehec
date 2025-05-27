@@ -50,12 +50,18 @@
                 <ColumnConstraints hgrow="ALWAYS"/>
             </columnConstraints>
             <children>
-                <!-- Tabla de empleados -->
+                <!-- Tabla de empleados con botones CRUD -->
                 <VBox alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <HBox alignment="CENTER" spacing="10" styleClass="crud-buttons">
+                        <Button text="Añadir" onAction="#handleAddEmployee" styleClass="crud-button"/>
+                        <Button text="Actualizar" onAction="#handleUpdateEmployee" styleClass="crud-button"/>
+                        <Button text="Eliminar" onAction="#handleDeleteEmployee" styleClass="crud-button"/>
+                        <Button text="Ver Detalles" onAction="#handleViewEmployee" styleClass="crud-button"/>
+                    </HBox>
                     <Label text="Empleados" styleClass="section-title"/>
                     <TableView fx:id="employeeTable" prefWidth="400" prefHeight="250">
                         <columns>
-                            <TableColumn fx:id="idColumn" text="ID" prefWidth="100"/>
+                            <TableColumn fx:id="idColumn" text="IdEmpleado" prefWidth="100"/>
                             <TableColumn fx:id="nameColumn" text="Nombre" prefWidth="150"/>
                             <TableColumn fx:id="emailColumn" text="Email" prefWidth="150"/>
                             <TableColumn fx:id="roleColumn" text="Rol" prefWidth="100"/>
