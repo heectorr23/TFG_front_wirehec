@@ -2,9 +2,8 @@ package com.wirehec.front_wirehec.APIs.EmployeeAPI.HTTP.Request;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wirehec.front_wirehec.DTO.Adapters.EmployeeDTOTypeAdapter;
-import com.wirehec.front_wirehec.DTO.CustomerDTO;
 import com.wirehec.front_wirehec.DTO.EmployeeDTO;
+import com.wirehec.front_wirehec.DTO.Adapters.EmployeeDTOTypeAdapter;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -15,11 +14,12 @@ import java.util.logging.Logger;
 public class PutEmployee {
     private static final Logger LOGGER = Logger.getLogger(PutEmployee.class.getName());
 
-    public void sendPutEmployeeRequest(EmployeeDTO employeeDTO, long id) {
+    public void sendPutEmployeeRequest(EmployeeDTO employeeDTO, Long id) {
         try {
             Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(CustomerDTO.class, new EmployeeDTOTypeAdapter())
+                    .registerTypeAdapter(EmployeeDTO.class, new EmployeeDTOTypeAdapter())
                     .create();
+
             String json = gson.toJson(employeeDTO);
 
             HttpClient client = HttpClient.newHttpClient();

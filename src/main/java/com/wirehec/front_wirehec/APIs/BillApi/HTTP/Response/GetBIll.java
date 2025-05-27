@@ -1,6 +1,7 @@
 package com.wirehec.front_wirehec.APIs.BillApi.HTTP.Response;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wirehec.front_wirehec.DTO.FacturaDTO;
@@ -20,7 +21,6 @@ public class GetBIll {
         List<FacturaDTO> facturaList = new ArrayList<>();
         try {
             HttpClient client = HttpClient.newHttpClient();
-
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/bill/all"))
                     .GET()
@@ -28,19 +28,20 @@ public class GetBIll {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            LOGGER.info("Codigo de estado: " + response.statusCode());
+            LOGGER.info("Código de estado: " + response.statusCode());
             LOGGER.info("Respuesta de la API: " + response.body());
 
             JsonArray jsonArray = JsonParser.parseString(response.body()).getAsJsonArray();
+            for (JsonElement element : jsonArray) {
+                JsonObject jsonObject = element.getAsJsonObject();
+                FacturaDTO factura = new FacturaDTO();
 
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-                FacturaDTO facturaDTO = new FacturaDTO();
-                facturaDTO.setId(jsonObject.get("id").getAsLong());
-                facturaDTO.setPrecio(jsonObject.get("precio").getAsBigDecimal());
-                facturaDTO.setZona(jsonObject.get("zona").getAsString());
-                facturaDTO.setDireccion(jsonObject.get("direccion").getAsString());
-                facturaList.add(facturaDTO);
+                factura.setId(jsonObject.get("id").getAsLong());
+                factura.setDireccion(jsonObject.get("direccion").isJsonNull() ? null : jsonObject.get("direccion").getAsString());
+                factura.setZona(jsonObject.get("zona").isJsonNull() ? null : jsonObject.get("zona").getAsString());
+                factura.setPrecio(jsonObject.get("precio").isJsonNull() ? null : jsonObject.get("precio").getAsBigDecimal());
+
+                facturaList.add(factura);
             }
         } catch (Exception e) {
             LOGGER.severe("Error al enviar la solicitud: " + e.getMessage());

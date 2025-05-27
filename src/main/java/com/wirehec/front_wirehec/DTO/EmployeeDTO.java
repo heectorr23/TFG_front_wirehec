@@ -14,6 +14,8 @@ import java.util.List;
 @Setter
 public class EmployeeDTO {
 
+    private long idEmpleado;
+
     private String nombreEmpleado;
 
     private String nifEmpleado;

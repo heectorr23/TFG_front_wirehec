@@ -129,12 +129,31 @@ public class MainController {
         cargarDatos();
 
         // Decodificar el token y actualizar el botón userDropdown
+        // Verificar y decodificar el token
         String token = TokenConstants.TOKEN;
         if (token != null && !token.isEmpty()) {
             String userName = TokenUtils.getUserNameFromToken(token);
             String userRole = TokenUtils.getUserRoleFromToken(token);
-            userDropdown.setText(userName);
-            userRoleLabel.setText(userRole); // Actualizar la etiqueta con el rol del usuario
+
+            System.out.println("Nombre de usuario extraído: " + userName);
+            System.out.println("Rol de usuario extraído: " + userRole);
+
+
+            if (userName != null && !userName.isEmpty()) {
+                userDropdown.setText(userName);
+            } else {
+                System.err.println("El token no contiene un nombre de usuario válido.");
+            }
+
+            if (userRole != null && !userRole.isEmpty()) {
+                userRoleLabel.setText(userRole);
+                userRoleLabel.setVisible(true);
+            } else {
+                System.err.println("El token no contiene un rol válido.");
+                userRoleLabel.setVisible(false);
+            }
+        } else {
+            System.err.println("El token es nulo o está vacío.");
         }
     }
 

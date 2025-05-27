@@ -1,5 +1,6 @@
 package com.wirehec.front_wirehec.Controllers;
 
+import com.wirehec.front_wirehec.APIs.EmployeeAPI.HTTP.Request.DeleteEmployee;
 import com.wirehec.front_wirehec.APIs.EmployeeAPI.HTTP.Response.GetEmployee;
 import com.wirehec.front_wirehec.Constants.TokenConstants;
 import com.wirehec.front_wirehec.DTO.EmployeeDTO;
@@ -16,12 +17,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmployeeController {
 
@@ -59,10 +62,14 @@ public class EmployeeController {
         setButtonIcon(ajustesButton, "fas-cogs");
         setButtonIcon(hamburgerButton, "fas-th");
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("idEmpleado"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("nombreEmpleado"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
+        roleColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getRoles().stream()
+                        .map(role -> role.getName())
+                        .collect(Collectors.joining(", "))
+        ));
 
         loadEmployees();
         String token = TokenConstants.TOKEN;
@@ -70,14 +77,19 @@ public class EmployeeController {
             String userName = TokenUtils.getUserNameFromToken(token);
             String userRole = TokenUtils.getUserRoleFromToken(token);
             userDropdown.setText(userName);
-            userRoleLabel.setText(userRole); // Actualizar la etiqueta con el rol del usuario
+            userRoleLabel.setText(userRole);
         }
     }
 
     private void loadEmployees() {
         GetEmployee getEmployee = new GetEmployee();
         List<EmployeeDTO> employees = getEmployee.sendGetEmployeeRequest();
-        employeeTable.setItems(FXCollections.observableArrayList(employees));
+        if (employees != null && !employees.isEmpty()) {
+            employeeTable.setItems(FXCollections.observableArrayList(employees));
+        } else {
+            System.err.println("No se encontraron empleados o la lista está vacía.");
+            employeeTable.setItems(FXCollections.observableArrayList()); // Asegura que la tabla esté vacía si no hay datos
+        }
     }
 
     private void setButtonIcon(Button button, String iconLiteral) {
@@ -125,6 +137,27 @@ public class EmployeeController {
         };
         transition.play();
     }
+    @FXML
+    private void handleUserAction() {
+        Button source = (Button) userMenu.getScene().getFocusOwner();
+        String action = source.getText();
+        switch (action) {
+            case "Cambiar Contraseña":
+                System.out.println("Redirect to change password page or call microservice");
+                break;
+            case "Mi Perfil":
+                System.out.println("Redirect to profile page or call microservice");
+                break;
+            case "Cerrar Sesión":
+                // Restablecer el token
+                TokenConstants.TOKEN = null;
+
+                // Navegar a la vista de login
+                navigateToLogin(null);
+                break;
+        }
+        toggleUserMenu();
+    }
 
     @FXML
     private void toggleUserMenu() {
@@ -137,25 +170,89 @@ public class EmployeeController {
     }
 
     @FXML
-    private void handleUserAction(ActionEvent event) {
-        Button source = (Button) event.getSource();
-        String action = source.getText();
-        switch (action) {
-            case "Cambiar Contraseña":
-                System.out.println("Redirigir a la página de cambio de contraseña");
-                break;
-            case "Mi Perfil":
-                System.out.println("Redirigir a la página de perfil");
-                break;
-            case "Cerrar Sesión":
-                TokenConstants.TOKEN = null;
+    private void handleAddEmployee() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/EmployeeViews/AddEmployee-view.fxml"));
+            Parent root = loader.load();
 
-                // Navegar a la vista de login
-                navigateToLogin(null);
-                break;
-            default:
-                System.out.println("Acción no reconocida: " + action);
+            Stage stage = new Stage();
+            stage.setTitle("Añadir Empleado");
+            stage.setScene(new Scene(root, 600, 400));
+            stage.setMinWidth(600);
+            stage.setMinHeight(400);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            loadEmployees();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleUpdateEmployee() {
+        EmployeeDTO selectedEmployee = employeeTable.getSelectionModel().getSelectedItem();
+        if (selectedEmployee == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Empleado", "Por favor, selecciona un empleado para actualizar.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/EmployeeViews/UpdateEmployee-view.fxml"));
+            Parent root = loader.load();
+
+            UpdateEmployeeController controller = loader.getController();
+            controller.setEmployeeData(selectedEmployee);
+
+            Stage stage = new Stage();
+            stage.setTitle("Actualizar Empleado");
+            stage.setScene(new Scene(root, 600, 400));
+            stage.setMinWidth(600);
+            stage.setMinHeight(400);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            loadEmployees();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteEmployee() {
+        EmployeeDTO selectedEmployee = employeeTable.getSelectionModel().getSelectedItem();
+        if (selectedEmployee == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Empleado", "Por favor, selecciona un empleado para eliminar.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar este empleado?", ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirmar Eliminación");
+        confirmation.showAndWait();
+
+        if (confirmation.getResult() == ButtonType.YES) {
+            new DeleteEmployee().sendDeleteEmployeeRequest(selectedEmployee.getIdEmpleado());
+            loadEmployees();
+        }
+    }
+
+    @FXML
+    private void handleViewEmployee() {
+        EmployeeDTO selectedEmployee = employeeTable.getSelectionModel().getSelectedItem();
+        if (selectedEmployee == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Empleado", "Por favor, selecciona un empleado para ver los detalles.");
+            return;
+        }
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles del Empleado", selectedEmployee.toString());
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
@@ -177,6 +274,7 @@ public class EmployeeController {
     public void navigateToFacturas(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
     }
+
     @FXML
     public void navigateToEmpleados(ActionEvent event) {
         String userRole = TokenUtils.getUserRoleFromToken(TokenConstants.TOKEN);
@@ -186,20 +284,16 @@ public class EmployeeController {
         }
         changeScene("/com/wirehec/front_wirehec/Views/EmployeeViews/Employee-view.fxml");
     }
-    private void showAlert(Alert.AlertType alertType, String title, String content) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
+
     @FXML
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
     }
+
     public void navigateToLogin(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/AuthViews/Login-view.fxml");
     }
+
     private void changeScene(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));

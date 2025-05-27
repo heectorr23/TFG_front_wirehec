@@ -165,3 +165,22 @@
     -fx-font-weight: bold;
     -fx-padding: 10px 0;
 }
+
+.crud-buttons {
+    -fx-padding: 10px;
+}
+
+.crud-button {
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.crud-button:hover {
+    -fx-background-color: #357abd;
+}
