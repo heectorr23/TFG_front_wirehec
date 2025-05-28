@@ -22,7 +22,7 @@ public class DeleteSupplierOrder {
 
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/orderSupplier/delete/" + id))
+                    .uri(URI.create("http://localhost:8086/api/orderSupplier/delete/" + id))
                     .DELETE()
                     .build();
 
