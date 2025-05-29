@@ -24,7 +24,7 @@ public class PutSupplierDetail {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/supplierDetail/update/" + id))
+                    .uri(URI.create("http://localhost:8086/api/supplierDetail/update/" + id))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .build();

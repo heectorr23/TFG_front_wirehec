@@ -1,10 +1,18 @@
 package com.wirehec.front_wirehec.Controllers;
 
+import com.wirehec.front_wirehec.APIs.ProductAPI.HTTP.Request.DeleteProduct;
+import com.wirehec.front_wirehec.APIs.ProductAPI.HTTP.Request.PostProduct;
+import com.wirehec.front_wirehec.APIs.ProductAPI.HTTP.Request.PutProduct;
 import com.wirehec.front_wirehec.APIs.ProductAPI.HTTP.Response.GetProduct;
+import com.wirehec.front_wirehec.APIs.SupplierAPI.HTTP.Request.*;
 import com.wirehec.front_wirehec.APIs.SupplierAPI.HTTP.Response.GetSupplier;
+import com.wirehec.front_wirehec.APIs.SupplierAPI.HTTP.Response.GetSupplierDetail;
+import com.wirehec.front_wirehec.APIs.SupplierAPI.HTTP.Response.GetSupplierOrder;
 import com.wirehec.front_wirehec.Constants.TokenConstants;
 import com.wirehec.front_wirehec.DTO.ProductDTO;
 import com.wirehec.front_wirehec.DTO.SupplierDTO;
+import com.wirehec.front_wirehec.DTO.SupplierDetailDTO;
+import com.wirehec.front_wirehec.DTO.SupplierOrderDTO;
 import com.wirehec.front_wirehec.Utils.TokenUtils;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
@@ -20,6 +28,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -68,12 +77,6 @@ public class ProductSupplierController {
 
     @FXML
     public void initialize() {
-        System.out.println("inicioButton: " + inicioButton);
-        System.out.println("productosButton: " + productosButton);
-        System.out.println("contabilidadButton: " + contabilidadButton);
-        System.out.println("facturasButton: " + facturasButton);
-        System.out.println("ajustesButton: " + ajustesButton);
-
         setButtonIcon(inicioButton, "fas-home");
         setButtonIcon(productosButton, "fas-box-open");
         setButtonIcon(contabilidadButton, "fas-chart-line");
@@ -82,13 +85,11 @@ public class ProductSupplierController {
         setButtonIcon(ajustesButton, "fas-cogs");
         setButtonIcon(hamburgerButton, "fas-th");
 
-        // Configurar columnas de la tabla de productos
         idProductColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nombreProductColumn.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
         categoriaProductColumn.setCellValueFactory(new PropertyValueFactory<>("categoriaProducto"));
         precioVentaProductColumn.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
 
-        // Configurar columnas de la tabla de proveedores
         idSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("idProveedor"));
         nombreSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("nombreProveedor"));
         cifSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("cifProveedor"));
@@ -96,29 +97,25 @@ public class ProductSupplierController {
         categoriaSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("categoriaProveedor"));
         productoSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("productoProveedor"));
 
-        // Cargar datos
         cargarDatos();
         String token = TokenConstants.TOKEN;
         if (token != null && !token.isEmpty()) {
             String userName = TokenUtils.getUserNameFromToken(token);
             String userRole = TokenUtils.getUserRoleFromToken(token);
             userDropdown.setText(userName);
-            userRoleLabel.setText(userRole); // Actualizar la etiqueta con el rol del usuario
+            userRoleLabel.setText(userRole);
         }
     }
 
     private void cargarDatos() {
-        // Obtener datos de productos desde la API
         GetProduct getProduct = new GetProduct();
         List<ProductDTO> productList = getProduct.sendGetProductRequest();
         productTable.setItems(FXCollections.observableArrayList(productList));
 
-        // Obtener datos de proveedores desde la API
         GetSupplier getSupplier = new GetSupplier();
         List<SupplierDTO> supplierList = getSupplier.sendGetSupplierRequest();
         supplierTable.setItems(FXCollections.observableArrayList(supplierList));
 
-        // Configurar gráfico de distribución de productos
         productDistributionChart.setData(FXCollections.observableArrayList(
                 productList.stream()
                         .collect(Collectors.groupingBy(ProductDTO::getCategoriaProducto, Collectors.counting()))
@@ -127,27 +124,7 @@ public class ProductSupplierController {
                         .map(entry -> new PieChart.Data(entry.getKey(), entry.getValue()))
                         .toList()
         ));
-
-        // Configurar gráfico de pedidos por proveedor (simulación)
-        supplierOrdersChart.getData().addAll(
-                new BarChart.Series<>("Pedidos", FXCollections.observableArrayList(
-                        new BarChart.Data<>("Proveedor A", 5),
-                        new BarChart.Data<>("Proveedor B", 8)
-                ))
-        );
     }
-
-    private void setButtonIcon(Button button, String iconLiteral) {
-        if (button == null) {
-            System.err.println("El botón es null: " + iconLiteral);
-            return;
-        }
-        FontIcon icon = new FontIcon(iconLiteral);
-        icon.setIconSize(18);
-        icon.setIconColor(javafx.scene.paint.Color.WHITE);
-        button.setGraphic(icon);
-    }
-
     @FXML
     private void toggleMenu() {
         isMenuExpanded = !isMenuExpanded;
@@ -182,7 +159,6 @@ public class ProductSupplierController {
         };
         transition.play();
     }
-
     @FXML
     private void toggleUserMenu() {
         isUserMenuVisible = !isUserMenuVisible;
@@ -205,6 +181,7 @@ public class ProductSupplierController {
                 System.out.println("Redirect to profile page or call microservice");
                 break;
             case "Cerrar Sesión":
+                // Restablecer el token
                 TokenConstants.TOKEN = null;
 
                 // Navegar a la vista de login
@@ -213,23 +190,149 @@ public class ProductSupplierController {
         }
         toggleUserMenu();
     }
+    @FXML
+    private void handleAddProduct() {
+        openModal("/com/wirehec/front_wirehec/Views/Product-SupplierViews/AddProduct-view.fxml", "Añadir Producto");
+    }
+    @FXML
+    private void handleUpdateProduct() {
+        ProductDTO selectedProduct = productTable.getSelectionModel().getSelectedItem();
+        if (selectedProduct == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Producto", "Por favor, selecciona un producto para actualizar.");
+            return;
+        }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/Product-SupplierViews/UpdateProduct-view.fxml"));
+            Parent root = loader.load();
+
+            UpdateProductController controller = loader.getController();
+            controller.setProductData(selectedProduct);
+
+            Stage stage = new Stage();
+            stage.setTitle("Actualizar Producto");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+            }
+        }
+    @FXML
+    private void handleDeleteProduct() {
+        ProductDTO selectedProduct = productTable.getSelectionModel().getSelectedItem();
+        if (selectedProduct == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Producto", "Por favor, selecciona un producto para eliminar.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar este producto?", ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirmar Eliminación");
+        confirmation.showAndWait();
+
+        if (confirmation.getResult() == ButtonType.YES) {
+            new DeleteProduct().sendDeleteProductRequest(selectedProduct);
+            cargarDatos();
+        }
+    }
+
+    @FXML
+    private void handleViewProduct() {
+        ProductDTO selectedProduct = productTable.getSelectionModel().getSelectedItem();
+        if (selectedProduct == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Producto", "Por favor, selecciona un producto para ver los detalles.");
+            return;
+        }
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles del Producto", selectedProduct.toString());
+    }
+    @FXML
+    private void handleAddSupplier() {
+        openModal("/com/wirehec/front_wirehec/Views/Product-SupplierViews/AddSupplier-view.fxml", "Añadir Proveedor");
+    }
+
+    @FXML
+    private void handleUpdateSupplier() {
+        SupplierDTO selectedSupplier = supplierTable.getSelectionModel().getSelectedItem();
+        if (selectedSupplier == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Proveedor", "Por favor, selecciona un proveedor para actualizar.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/Product-SupplierViews/UpdateSupplier-view.fxml"));
+            Parent root = loader.load();
+
+            UpdateSupplierController controller = loader.getController();
+            controller.setSupplierData(selectedSupplier);
+
+            Stage stage = new Stage();
+            stage.setTitle("Actualizar Proveedor");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleDeleteSupplier() {
+        SupplierDTO selectedSupplier = supplierTable.getSelectionModel().getSelectedItem();
+        if (selectedSupplier == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Proveedor", "Por favor, selecciona un proveedor para eliminar.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar este proveedor?", ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirmar Eliminación");
+        confirmation.showAndWait();
+
+        if (confirmation.getResult() == ButtonType.YES) {
+            new DeleteSupplier().sendDeleteSupplierRequest(selectedSupplier);
+            cargarDatos();
+        }
+    }
+
+    @FXML
+    private void handleViewSupplier() {
+        SupplierDTO selectedSupplier = supplierTable.getSelectionModel().getSelectedItem();
+        if (selectedSupplier == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Proveedor", "Por favor, selecciona un proveedor para ver los detalles.");
+            return;
+        }
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles del Proveedor", selectedSupplier.toString());
+    }
+    private void openModal(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @FXML
     public void navigateToInicio(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml");
     }
-
-    @FXML
     public void navigateToProductos(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/Product-SupplierViews/ProductSupplier-View.fxml");
     }
-
-    @FXML
     public void navigateToContabilidad(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/ContabilityViews/Contability-view.fxml");
     }
-
-    @FXML
     public void navigateToFacturas(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
     }
@@ -249,17 +352,21 @@ public class ProductSupplierController {
         alert.setContentText(content);
         alert.showAndWait();
     }
-    @FXML
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
     }
     public void navigateToLogin(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/AuthViews/Login-view.fxml");
     }
-
+    private void setButtonIcon(Button button, String iconLiteral) {
+        FontIcon icon = new FontIcon(iconLiteral);
+        icon.setIconSize(18);
+        icon.setIconColor(javafx.scene.paint.Color.WHITE);
+        button.setGraphic(icon);
+    }
     private void changeScene(String fxmlPath) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(MainController.class.getResource(fxmlPath));
             Parent root = loader.load();
 
             // Obtener el Stage actual y reemplazar la escena

@@ -14,13 +14,10 @@ module com.wirehec.front_wirehec {
     requires java.sql;
     requires com.auth0.jwt;
 
+    opens com.wirehec.front_wirehec.DTO to com.google.gson, javafx.base;
     opens com.wirehec.front_wirehec to javafx.fxml;
-    opens com.wirehec.front_wirehec.DTO to javafx.base;
     opens com.wirehec.front_wirehec.Controllers to javafx.fxml;
 
     exports com.wirehec.front_wirehec;
     exports com.wirehec.front_wirehec.Controllers;
 }
-
-
-
