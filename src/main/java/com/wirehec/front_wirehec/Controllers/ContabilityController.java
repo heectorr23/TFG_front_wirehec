@@ -1,5 +1,6 @@
 package com.wirehec.front_wirehec.Controllers;
 
+import com.wirehec.front_wirehec.APIs.ContabilityApi.HTTP.Request.DeleteContability;
 import com.wirehec.front_wirehec.APIs.ContabilityApi.HTTP.Response.GetContability;
 import com.wirehec.front_wirehec.Constants.TokenConstants;
 import com.wirehec.front_wirehec.DTO.ContabilityDTO;
@@ -12,20 +13,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ContabilityController {
 
@@ -44,6 +43,8 @@ public class ContabilityController {
     @FXML private Button facturasButton;
     @FXML private Button empleadosButton;
     @FXML private Button ajustesButton;
+    @FXML private Button addButton;
+    @FXML private Button saveButton;
 
     @FXML private TableView<ContabilityDTO> contabilityTable;
     @FXML private TableColumn<ContabilityDTO, Long> idColumn;
@@ -53,6 +54,8 @@ public class ContabilityController {
 
     @FXML private PieChart contabilityDistributionChart;
     @FXML private BarChart<String, Number> contabilityBarChart;
+    @FXML private CategoryAxis xAxis;
+    @FXML private NumberAxis yAxis;
 
     private boolean isUserMenuVisible = false;
     private boolean isMenuExpanded = false;
@@ -86,25 +89,35 @@ public class ContabilityController {
     }
 
     private void cargarDatos() {
-        // Obtener datos de contabilidad desde la API
         GetContability getContability = new GetContability();
         List<ContabilityDTO> contabilityList = getContability.sendGetContabilityRequest();
         contabilityTable.setItems(FXCollections.observableArrayList(contabilityList));
 
-        // Configurar gráfico de distribución de presupuesto, beneficio y gasto
+        // Limpiar gráficos antes de recargar datos
+        contabilityDistributionChart.getData().clear();
+        contabilityBarChart.getData().clear();
+        xAxis.getCategories().clear();
+
+        // Configurar gráfico de distribución
         contabilityDistributionChart.setData(FXCollections.observableArrayList(
                 new PieChart.Data("Presupuesto", contabilityList.stream().mapToDouble(ContabilityDTO::getPresupuestomensual).sum()),
                 new PieChart.Data("Beneficio", contabilityList.stream().mapToDouble(ContabilityDTO::getBeneficio).sum()),
                 new PieChart.Data("Gasto", contabilityList.stream().mapToDouble(ContabilityDTO::getGasto).sum())
         ));
 
-        // Configurar gráfico de barras para mostrar datos por ID
+        // Configurar gráfico de barras
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Contabilidad");
         contabilityList.forEach(contability -> {
             series.getData().add(new XYChart.Data<>(String.valueOf(contability.getIdContabilidad()), contability.getBeneficio()));
         });
         contabilityBarChart.getData().add(series);
+
+        // Actualizar categorías del eje X
+        xAxis.setCategories(FXCollections.observableArrayList(
+                contabilityList.stream().map(c -> String.valueOf(c.getIdContabilidad())).toList()
+        ));
+        yAxis.setAutoRanging(true);
     }
 
     private void setButtonIcon(Button button, String iconLiteral) {
@@ -116,6 +129,83 @@ public class ContabilityController {
         icon.setIconSize(18);
         icon.setIconColor(javafx.scene.paint.Color.WHITE);
         button.setGraphic(icon);
+    }
+    @FXML
+    private void handleAddContability(ActionEvent event) {
+        try {
+            addButton.setDisable(true); // Deshabilitar el botón para evitar múltiples clics
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/ContabilityViews/AddContability-view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Añadir Contabilidad");
+            stage.setScene(new Scene(root, 600, 400));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarDatos(); // Recargar datos después de cerrar la ventana
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la vista para añadir contabilidad.");
+        } finally {
+            addButton.setDisable(false); // Rehabilitar el botón
+        }
+    }
+    @FXML
+    private void handleUpdateContability() {
+        ContabilityDTO selected = contabilityTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Contabilidad", "Por favor, selecciona un registro para actualizar.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/ContabilityViews/UpdateContability-view.fxml"));
+            Parent root = loader.load();
+
+            UpdateContabilityController controller = loader.getController();
+            controller.setContabilityData(selected);
+
+            Stage stage = new Stage();
+            stage.setTitle("Actualizar Contabilidad");
+            stage.setScene(new Scene(root, 600, 400));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteContability() {
+        ContabilityDTO selected = contabilityTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Contabilidad", "Por favor, selecciona un registro para eliminar.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar este registro?", ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirmar Eliminación");
+        confirmation.showAndWait();
+
+        if (confirmation.getResult() == ButtonType.YES) {
+            new DeleteContability().sendDeleteContabilityRequest(selected);
+            cargarDatos();
+        }
+    }
+
+    @FXML
+    private void handleViewContability() {
+        ContabilityDTO selected = contabilityTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Contabilidad", "Por favor, selecciona un registro para ver los detalles.");
+            return;
+        }
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles de Contabilidad", selected.toString());
     }
 
     @FXML
@@ -162,6 +252,7 @@ public class ContabilityController {
         ft.play();
         userMenu.setVisible(isUserMenuVisible);
     }
+
     @FXML
     private void handleUserAction(ActionEvent event) {
         Button source = (Button) event.getSource();
@@ -201,6 +292,7 @@ public class ContabilityController {
     public void navigateToFacturas(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
     }
+
     @FXML
     public void navigateToEmpleados(ActionEvent event) {
         String userRole = TokenUtils.getUserRoleFromToken(TokenConstants.TOKEN);
@@ -210,6 +302,7 @@ public class ContabilityController {
         }
         changeScene("/com/wirehec/front_wirehec/Views/EmployeeViews/Employee-view.fxml");
     }
+
     private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -217,9 +310,11 @@ public class ContabilityController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
     }
+
     public void navigateToLogin(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/AuthViews/Login-view.fxml");
     }
