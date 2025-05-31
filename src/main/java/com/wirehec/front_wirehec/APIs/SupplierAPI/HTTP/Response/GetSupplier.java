@@ -23,7 +23,7 @@ public class GetSupplier {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8086/api/supplier/all"))
+                    .uri(URI.create("http://localhost:8080/api/supplier/all"))
                     .GET()
                     .build();
 

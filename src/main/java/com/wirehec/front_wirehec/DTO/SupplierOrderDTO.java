@@ -2,7 +2,7 @@ package com.wirehec.front_wirehec.DTO;
 
 import lombok.*;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -10,9 +10,9 @@ import java.sql.Date;
 @Builder
 public class SupplierOrderDTO {
 
-    private Long  idPedidoProveedor;
+    private Long idPedidoProveedor;
 
-    private Date fechaPedido;
+    private LocalDate fechaPedido;
 
-    private Date fechaEntrega;
+    private LocalDate fechaEntrega;
 }

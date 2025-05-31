@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddSupplierDetailController" spacing="10" alignment="CENTER" styleClass="form-container">
+    <Label text="Añadir Detalle de Proveedor" styleClass="form-title"/>
+    <ComboBox fx:id="supplierComboBox" promptText="Seleccionar Proveedor" prefWidth="300"/>
+    <TextField fx:id="idProductField" promptText="ID Producto"/>
+    <TextField fx:id="idProveedorField" promptText="ID Proveedor"/>
+    <TextField fx:id="nombreProveedorField" promptText="Nombre Proveedor"/>
+    <TextField fx:id="cifProveedorField" promptText="CIF Proveedor"/>
+    <TextField fx:id="emailProveedorField" promptText="Email Proveedor"/>
+    <TextField fx:id="categoriaProveedorField" promptText="Categoría Proveedor"/>
+    <TextField fx:id="productoProveedorField" promptText="Producto Proveedor"/>
+    <TextField fx:id="idPedidoField" promptText="ID Pedido (opcional)"/>
+    <DatePicker fx:id="fechaPedidoField" promptText="Fecha Pedido (opcional)"/>
+    <DatePicker fx:id="fechaEntregaField" promptText="Fecha Entrega (opcional)"/>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="saveButton" text="Guardar" onAction="#handleSave" styleClass="form-button"/>        <Button text="Cancelar" onAction="#handleCancel" styleClass="form-button"/>
+    </HBox>
+</VBox>
