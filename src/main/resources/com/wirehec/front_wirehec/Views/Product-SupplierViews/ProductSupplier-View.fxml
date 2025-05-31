@@ -119,11 +119,19 @@
                 <!-- Botones y tabla de SupplierOrder -->
                 <VBox alignment="CENTER" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2">
                     <HBox alignment="CENTER" spacing="10">
-                        <padding>
-                            <Insets top="10" right="10" bottom="10" left="10"/>
-                        </padding>
+                        <Button text="Añadir" onAction="#handleAddSupplierDetail" styleClass="crud-button"/>
+                        <Button text="Actualizar" onAction="#handleUpdateSupplierDetail" styleClass="crud-button"/>
+                        <Button text="Eliminar" onAction="#handleDeleteSupplierDetail" styleClass="crud-button"/>
+                        <Button text="Ver Detalles" onAction="#handleViewSupplierDetail" styleClass="crud-button"/>
                     </HBox>
-                    <Label text="Pedidos de Proveedores" styleClass="section-title"/>
+                    <Label text="Detalles de Proveedores" styleClass="section-title"/>
+                    <TableView fx:id="supplierDetailTable" prefWidth="800" prefHeight="250">
+                        <columns>
+                            <TableColumn fx:id="idSupplierDetailColumn" text="Id" prefWidth="100"/>
+                            <TableColumn fx:id="supplierColumn" text="Proveedor" prefWidth="200"/>
+                            <TableColumn fx:id="ordersColumn" text="Pedidos" prefWidth="300"/>
+                        </columns>
+                    </TableView>
                 </VBox>
             </children>
         </GridPane>

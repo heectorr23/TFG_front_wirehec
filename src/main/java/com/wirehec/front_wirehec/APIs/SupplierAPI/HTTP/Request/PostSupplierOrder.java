@@ -25,7 +25,7 @@ public class PostSupplierOrder {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8086/api/orderSupplier/save"))
+                    .uri(URI.create("http://localhost:8080/api/orderSupplier/save"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();

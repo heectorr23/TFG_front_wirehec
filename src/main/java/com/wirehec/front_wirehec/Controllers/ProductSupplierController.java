@@ -16,6 +16,8 @@ import com.wirehec.front_wirehec.DTO.SupplierOrderDTO;
 import com.wirehec.front_wirehec.Utils.TokenUtils;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -69,6 +71,11 @@ public class ProductSupplierController {
     @FXML private TableColumn<SupplierDTO, String> categoriaSupplierColumn;
     @FXML private TableColumn<SupplierDTO, String> productoSupplierColumn;
 
+    @FXML private TableView<SupplierDetailDTO> supplierDetailTable;
+    @FXML private TableColumn<SupplierDetailDTO, Long> idSupplierDetailColumn;
+    @FXML private TableColumn<SupplierDetailDTO, String> supplierColumn;
+    @FXML private TableColumn<SupplierDetailDTO, String> ordersColumn;
+
     @FXML private PieChart productDistributionChart;
     @FXML private BarChart<String, Number> supplierOrdersChart;
 
@@ -97,6 +104,16 @@ public class ProductSupplierController {
         categoriaSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("categoriaProveedor"));
         productoSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("productoProveedor"));
 
+        idSupplierDetailColumn.setCellValueFactory(new PropertyValueFactory<>("idDetalleProveedor"));
+        supplierColumn.setCellValueFactory(new PropertyValueFactory<>("supplier"));
+        ordersColumn.setCellValueFactory(new PropertyValueFactory<>("supplierOrders"));
+
+
+        idSupplierDetailColumn.setCellValueFactory(new PropertyValueFactory<>("idDetalleProveedor"));
+        supplierColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplier().getNombreProveedor()));
+        ordersColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplierOrders().toString()));
+
+        configurarTablaDetalles();
         cargarDatos();
         String token = TokenConstants.TOKEN;
         if (token != null && !token.isEmpty()) {
@@ -107,24 +124,77 @@ public class ProductSupplierController {
         }
     }
 
-    private void cargarDatos() {
-        GetProduct getProduct = new GetProduct();
-        List<ProductDTO> productList = getProduct.sendGetProductRequest();
-        productTable.setItems(FXCollections.observableArrayList(productList));
-
-        GetSupplier getSupplier = new GetSupplier();
-        List<SupplierDTO> supplierList = getSupplier.sendGetSupplierRequest();
-        supplierTable.setItems(FXCollections.observableArrayList(supplierList));
-
-        productDistributionChart.setData(FXCollections.observableArrayList(
-                productList.stream()
-                        .collect(Collectors.groupingBy(ProductDTO::getCategoriaProducto, Collectors.counting()))
-                        .entrySet()
-                        .stream()
-                        .map(entry -> new PieChart.Data(entry.getKey(), entry.getValue()))
-                        .toList()
-        ));
+    private void setButtonIcon(Button button, String iconLiteral) {
+        if (button == null) {
+            System.err.println("El botón es null: " + iconLiteral);
+            return;
+        }
+        FontIcon icon = new FontIcon(iconLiteral);
+        icon.setIconSize(18);
+        icon.setIconColor(javafx.scene.paint.Color.WHITE);
+        button.setGraphic(icon);
     }
+    private void configurarTablaDetalles() {
+        // Configurar columna para el ID del detalle del proveedor
+        idSupplierDetailColumn = new TableColumn<>("ID Detalle");
+        idSupplierDetailColumn.setCellValueFactory(new PropertyValueFactory<>("idDetalleProveedor"));
+
+        // Configurar columna para el nombre del proveedor
+        supplierColumn = new TableColumn<>("Proveedor");
+        supplierColumn.setCellValueFactory(cellData -> {
+            SupplierDTO supplier = cellData.getValue().getSupplier();
+            return new SimpleStringProperty(supplier != null ? supplier.getNombreProveedor() : "N/A");
+        });
+
+        // Configurar columna para los pedidos
+        ordersColumn = new TableColumn<>("Pedidos");
+        ordersColumn.setCellValueFactory(cellData -> {
+            List<SupplierOrderDTO> orders = cellData.getValue().getSupplierOrders();
+            return new SimpleStringProperty(orders != null ? orders.stream()
+                    .map(order -> "ID: " + order.getIdPedidoProveedor())
+                    .collect(Collectors.joining(", ")) : "Sin pedidos");
+        });
+
+        // Añadir las columnas a la tabla
+        supplierDetailTable.getColumns().setAll(idSupplierDetailColumn, supplierColumn, ordersColumn);
+    }
+    private void cargarDatos() {
+        try {
+            // Obtener los datos de productos
+            GetProduct getProduct = new GetProduct();
+            List<ProductDTO> productList = getProduct.sendGetProductRequest();
+            productTable.setItems(FXCollections.observableArrayList(productList));
+
+            // Obtener los datos de proveedores
+            GetSupplier getSupplier = new GetSupplier();
+            List<SupplierDTO> supplierList = getSupplier.sendGetSupplierRequest();
+            supplierTable.setItems(FXCollections.observableArrayList(supplierList));
+
+            // Obtener los datos de detalles de proveedores
+            GetSupplierDetail getSupplierDetail = new GetSupplierDetail();
+            List<SupplierDetailDTO> supplierDetailList = getSupplierDetail.sendGetSupplierDetailRequest();
+
+            // Validar si la lista está vacía
+            if (supplierDetailList == null || supplierDetailList.isEmpty()) {
+                System.out.println("No se encontraron detalles de proveedores.");
+                return;
+            }
+
+            // Cargar los datos en la tabla
+            supplierDetailTable.setItems(FXCollections.observableArrayList(supplierDetailList));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error al cargar datos", "No se pudieron cargar los datos correctamente.");
+        }
+        try {
+            List<SupplierDetailDTO> supplierDetails = new GetSupplierDetail().sendGetSupplierDetailRequest();
+            supplierDetailTable.setItems(FXCollections.observableArrayList(supplierDetails));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudieron cargar los datos.");
+        }
+    }
+
     @FXML
     private void toggleMenu() {
         isMenuExpanded = !isMenuExpanded;
@@ -159,6 +229,7 @@ public class ProductSupplierController {
         };
         transition.play();
     }
+
     @FXML
     private void toggleUserMenu() {
         isUserMenuVisible = !isUserMenuVisible;
@@ -170,25 +241,25 @@ public class ProductSupplierController {
     }
 
     @FXML
-    private void handleUserAction() {
-        Button source = (Button) userMenu.getScene().getFocusOwner();
+    private void handleUserAction(ActionEvent event) {
+        Button source = (Button) event.getSource();
         String action = source.getText();
         switch (action) {
             case "Cambiar Contraseña":
-                System.out.println("Redirect to change password page or call microservice");
+                System.out.println("Redirigir a la página de cambio de contraseña");
                 break;
             case "Mi Perfil":
-                System.out.println("Redirect to profile page or call microservice");
+                System.out.println("Redirigir a la página de perfil");
                 break;
             case "Cerrar Sesión":
-                // Restablecer el token
                 TokenConstants.TOKEN = null;
 
                 // Navegar a la vista de login
                 navigateToLogin(null);
                 break;
+            default:
+                System.out.println("Acción no reconocida: " + action);
         }
-        toggleUserMenu();
     }
     @FXML
     private void handleAddProduct() {
@@ -218,8 +289,8 @@ public class ProductSupplierController {
             cargarDatos();
         } catch (IOException e) {
             e.printStackTrace();
-            }
         }
+    }
     @FXML
     private void handleDeleteProduct() {
         ProductDTO selectedProduct = productTable.getSelectionModel().getSelectedItem();
@@ -307,6 +378,87 @@ public class ProductSupplierController {
 
         showAlert(Alert.AlertType.INFORMATION, "Detalles del Proveedor", selectedSupplier.toString());
     }
+    @FXML
+    private void handleAddSupplierDetail() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/Product-SupplierViews/AddSupplierDetail-view.fxml"));
+            Parent root = loader.load();
+
+            AddSupplierDetailController controller = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Añadir Detalle de Proveedor");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            // Eliminar la llamada redundante a sendPostSupplierDetailRequest
+            SupplierDetailDTO newDetail = controller.getSupplierDetail();
+            if (newDetail != null) {
+                cargarDatos(); // Solo recargar datos si se añadió un nuevo detalle
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo abrir el formulario para añadir detalles.");
+        }
+    }
+
+    @FXML
+    private void handleUpdateSupplierDetail() {
+        SupplierDetailDTO selectedDetail = supplierDetailTable.getSelectionModel().getSelectedItem();
+        if (selectedDetail == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Detalle", "Por favor, selecciona un detalle para actualizar.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/Product-SupplierViews/UpdateSupplierDetail-view.fxml"));
+            Parent root = loader.load();
+
+            UpdateSupplierDetailController controller = loader.getController();
+            controller.setSupplierDetailData(selectedDetail);
+
+            Stage stage = new Stage();
+            stage.setTitle("Actualizar Detalle de Proveedor");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteSupplierDetail() {
+        SupplierDetailDTO selectedDetail = supplierDetailTable.getSelectionModel().getSelectedItem();
+        if (selectedDetail == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Detalle", "Por favor, selecciona un detalle para eliminar.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar este detalle?", ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirmar Eliminación");
+        confirmation.showAndWait();
+
+        if (confirmation.getResult() == ButtonType.YES) {
+            new DeleteSupplierDetail().sendDeleteSupplierDetailRequest(selectedDetail);
+            cargarDatos();
+        }
+    }
+
+    @FXML
+    private void handleViewSupplierDetail() {
+        SupplierDetailDTO selectedDetail = supplierDetailTable.getSelectionModel().getSelectedItem();
+        if (selectedDetail == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Detalle", "Por favor, selecciona un detalle para ver los detalles.");
+            return;
+        }
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles del Detalle de Proveedor", selectedDetail.toString());
+    }
+
     private void openModal(String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -323,19 +475,32 @@ public class ProductSupplierController {
             e.printStackTrace();
         }
     }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
     @FXML
     public void navigateToInicio(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml");
     }
+
     public void navigateToProductos(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/Product-SupplierViews/ProductSupplier-View.fxml");
     }
+
     public void navigateToContabilidad(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/ContabilityViews/Contability-view.fxml");
     }
+
+    @FXML
     public void navigateToFacturas(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/BillViews/Bill-view.fxml");
     }
+
     @FXML
     public void navigateToEmpleados(ActionEvent event) {
         String userRole = TokenUtils.getUserRoleFromToken(TokenConstants.TOKEN);
@@ -345,35 +510,27 @@ public class ProductSupplierController {
         }
         changeScene("/com/wirehec/front_wirehec/Views/EmployeeViews/Employee-view.fxml");
     }
-    private void showAlert(Alert.AlertType alertType, String title, String content) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
+
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
     }
+
     public void navigateToLogin(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/AuthViews/Login-view.fxml");
     }
-    private void setButtonIcon(Button button, String iconLiteral) {
-        FontIcon icon = new FontIcon(iconLiteral);
-        icon.setIconSize(18);
-        icon.setIconColor(javafx.scene.paint.Color.WHITE);
-        button.setGraphic(icon);
-    }
+
     private void changeScene(String fxmlPath) {
         try {
-            FXMLLoader loader = new FXMLLoader(MainController.class.getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
             // Obtener el Stage actual y reemplazar la escena
             Stage stage = (Stage) contentPane.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Error al cargar la vista: " + fxmlPath);
         }
     }
 }
