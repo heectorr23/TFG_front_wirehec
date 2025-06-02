@@ -31,6 +31,8 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
+import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
+
 public class MainController {
 
     @FXML private VBox menuVBox;
@@ -139,35 +141,31 @@ public class MainController {
         zonaClienteColumn.setCellValueFactory(new PropertyValueFactory<>("zona"));
         direccionClienteColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
 
-        // Cargar datos
+        ajustarColumnas();
         cargarDatos();
 
-        // Decodificar el token y actualizar el botón userDropdown
-        // Verificar y decodificar el token
-        String token = TokenConstants.TOKEN;
-        if (token != null && !token.isEmpty()) {
-            String userName = TokenUtils.getUserNameFromToken(token);
-            String userRole = TokenUtils.getUserRoleFromToken(token);
 
-            System.out.println("Nombre de usuario extraído: " + userName);
-            System.out.println("Rol de usuario extraído: " + userRole);
+        String userName = TokenUtils.getUserNameFromToken(TokenConstants.TOKEN);
+        userDropdown.setText(userName != null ? userName : "Invitado");
 
 
-            if (userName != null && !userName.isEmpty()) {
-                userDropdown.setText(userName);
-            } else {
-                System.err.println("El token no contiene un nombre de usuario válido.");
-            }
+        String userRole = TokenUtils.getUserRoleFromToken(TokenConstants.TOKEN);
+        userRoleLabel.setText(userRole != null ? userRole : "Invitado");
 
-            if (userRole != null && !userRole.isEmpty()) {
-                userRoleLabel.setText(userRole);
-                userRoleLabel.setVisible(true);
-            } else {
-                System.err.println("El token no contiene un rol válido.");
-                userRoleLabel.setVisible(false);
-            }
-        } else {
-            System.err.println("El token es nulo o está vacío.");
+
+    }
+
+    private void ajustarColumnas() {
+        ajustarAnchoColumnas(billtable);
+        ajustarAnchoColumnas(supplierordertable);
+        ajustarAnchoColumnas(productTable);
+        ajustarAnchoColumnas(clientTable);
+    }
+
+    private void ajustarAnchoColumnas(TableView<?> tableView) {
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        for (TableColumn<?, ?> column : tableView.getColumns()) {
+            column.setPrefWidth(USE_COMPUTED_SIZE);
         }
     }
 
