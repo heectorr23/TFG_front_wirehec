@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane fx:id="contentPane" fx:controller="com.wirehec.front_wirehec.Controllers.CustomerController" xmlns:fx="http://javafx.com/fxml" stylesheets="@../../Styles/main.css">
+    <left>
+        <VBox fx:id="menuVBox" styleClass="menu-panel">
+            <padding>
+                <Insets top="10" left="10" right="10" bottom="10"/>
+            </padding>
+            <Button fx:id="inicioButton" text="Inicio" onAction="#navigateToInicio" styleClass="menu-button"/>
+            <Button fx:id="productosButton" text="Productos" onAction="#navigateToProductos" styleClass="menu-button"/>
+            <Button fx:id="contabilidadButton" text="Contabilidad" onAction="#navigateToContabilidad" styleClass="menu-button"/>
+            <Button fx:id="facturasButton" text="Facturas" onAction="#navigateToFacturas" styleClass="menu-button"/>
+            <Button fx:id="empleadosButton" text="Empleados" onAction="#navigateToEmpleados" styleClass="menu-button"/>
+            <Button fx:id="clientesButton" text="Clientes" onAction="#navigateToCustomer" styleClass="menu-button"/>
+            <Button fx:id="ajustesButton" text="Ajustes" onAction="#navigateToAjustes" styleClass="menu-button"/>
+        </VBox>
+    </left>
+    <top>
+        <HBox alignment="CENTER" spacing="10" styleClass="header-panel">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button fx:id="hamburgerButton" styleClass="menu-button" onAction="#toggleMenu"/>
+            <Label fx:id="menuLabel" text="MENU" styleClass="menu-label" visible="false"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="CLIENTES" styleClass="header-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="userDropdown" text="Nombre" styleClass="user-button" onAction="#toggleUserMenu"/>
+            <VBox fx:id="userMenu" visible="false" styleClass="user-menu">
+                <Button text="Cambiar Contraseña" onAction="#handleUserAction"/>
+                <Button text="Mi Perfil" onAction="#handleUserAction"/>
+                <Button text="Cerrar Sesión" onAction="#handleUserAction"/>
+            </VBox>
+            <Label fx:id="userRoleLabel" text="Rol" styleClass="user-role-label" visible="true"/>
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="10" styleClass="content-panel">
+            <HBox alignment="CENTER" spacing="10" styleClass="crud-buttons">
+                <Button fx:id="addButton" text="Añadir" onAction="#handleAddCustomer" styleClass="crud-button"/>
+                <Button text="Actualizar" onAction="#handleUpdateCustomer" styleClass="crud-button"/>
+                <Button text="Eliminar" onAction="#handleDeleteCustomer" styleClass="crud-button"/>
+                <Button text="Ver Detalles" onAction="#handleViewCustomer" styleClass="crud-button"/>
+            </HBox>
+            <TableView fx:id="clientTable" prefWidth="800" prefHeight="400">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="100"/>
+                    <TableColumn fx:id="nombreClienteColumn" text="Nombre" prefWidth="100"/>
+                    <TableColumn fx:id="contactoClienteColumn" text="Contacto" prefWidth="150"/>
+                    <TableColumn fx:id="telefonoClienteColumn" text="Teléfono" prefWidth="150"/>
+                    <TableColumn fx:id="identificacionClienteColumn" text="Identificación" prefWidth="150"/>
+                    <TableColumn fx:id="emailClienteColumn" text="Email" prefWidth="150"/>
+                    <TableColumn fx:id="zonaClienteColumn" text="Zona" prefWidth="150"/>
+                    <TableColumn fx:id="direccionClienteColumn" text="Dirección" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

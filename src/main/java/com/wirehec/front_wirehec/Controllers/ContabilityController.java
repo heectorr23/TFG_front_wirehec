@@ -38,10 +38,10 @@ public class ContabilityController {
 
     @FXML private Button inicioButton;
     @FXML private Button productosButton;
-    @FXML private Button proveedoresButton;
     @FXML private Button contabilidadButton;
     @FXML private Button facturasButton;
     @FXML private Button empleadosButton;
+    @FXML private Button clientesButton;
     @FXML private Button ajustesButton;
     @FXML private Button addButton;
     @FXML private Button saveButton;
@@ -64,12 +64,34 @@ public class ContabilityController {
     public void initialize() {
         setButtonIcon(inicioButton, "fas-home");
         setButtonIcon(productosButton, "fas-box-open");
-        setButtonIcon(proveedoresButton, "fas-truck");
         setButtonIcon(contabilidadButton, "fas-chart-line");
         setButtonIcon(facturasButton, "fas-file-invoice");
         setButtonIcon(empleadosButton, "fas-user-tie");
+        setButtonIcon(clientesButton, "fas-users");
         setButtonIcon(ajustesButton, "fas-cogs");
         setButtonIcon(hamburgerButton, "fas-th");
+
+        if (isMenuExpanded) {
+            menuVBox.getStyleClass().add("expanded");
+            menuLabel.setVisible(true);
+            inicioButton.setText("Inicio");
+            productosButton.setText("Productos");
+            contabilidadButton.setText("Contabilidad");
+            facturasButton.setText("Facturas");
+            empleadosButton.setText("Empleados");
+            clientesButton.setText("Clientes");
+            ajustesButton.setText("Ajustes");
+        } else {
+            menuVBox.getStyleClass().remove("expanded");
+            menuLabel.setVisible(false);
+            inicioButton.setText(null);
+            productosButton.setText(null);
+            contabilidadButton.setText(null);
+            facturasButton.setText(null);
+            empleadosButton.setText(null);
+            clientesButton.setText(null);
+            ajustesButton.setText(null);
+        }
 
         // Configurar columnas de la tabla de contabilidad
         idColumn.setCellValueFactory(new PropertyValueFactory<>("idContabilidad"));
@@ -222,9 +244,27 @@ public class ContabilityController {
                 menuVBox.getStyleClass().add("expanded");
             }
             menuLabel.setVisible(true);
+
+            // Restaurar texto de los botones
+            inicioButton.setText("Inicio");
+            productosButton.setText("Productos");
+            contabilidadButton.setText("Contabilidad");
+            facturasButton.setText("Facturas");
+            empleadosButton.setText("Empleados");
+            clientesButton.setText("Clientes");
+            ajustesButton.setText("Ajustes");
         } else {
             menuVBox.getStyleClass().remove("expanded");
             menuLabel.setVisible(false);
+
+            // Eliminar texto de los botones
+            inicioButton.setText("");
+            productosButton.setText("");
+            contabilidadButton.setText("");
+            facturasButton.setText("");
+            empleadosButton.setText("");
+            clientesButton.setText("");
+            ajustesButton.setText("");
         }
     }
 
@@ -318,7 +358,9 @@ public class ContabilityController {
     public void navigateToLogin(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/AuthViews/Login-view.fxml");
     }
-
+    public void navigateToCustomer(ActionEvent event) {
+        changeScene("/com/wirehec/front_wirehec/Views/CustomerViews/Customer-view.fxml");
+    }
     private void changeScene(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));

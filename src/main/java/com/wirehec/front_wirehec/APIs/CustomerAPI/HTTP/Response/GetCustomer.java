@@ -3,8 +3,6 @@ package com.wirehec.front_wirehec.APIs.CustomerAPI.HTTP.Response;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.wirehec.front_wirehec.APIs.BillApi.HTTP.Response.GetBIll;
-import com.wirehec.front_wirehec.DTO.ContabilityDTO;
 import com.wirehec.front_wirehec.DTO.CustomerDTO;
 
 import java.net.URI;
@@ -16,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class GetCustomer {
-    private static final Logger LOGGER = Logger.getLogger(GetBIll.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GetCustomer.class.getName());
 
     public List<CustomerDTO> sendGetCustomerRequest() {
         List<CustomerDTO> customerList = new ArrayList<>();
@@ -38,13 +36,16 @@ public class GetCustomer {
             for (int i = 0; i < jsonArray.size(); i++) {
                 JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
                 CustomerDTO customerDTO = new CustomerDTO();
-                customerDTO.setName(jsonObject.get("name").getAsString());
-                customerDTO.setContacto(jsonObject.get("contacto").getAsString());
-                customerDTO.setTelefono(jsonObject.get("telefono").getAsInt());
-                customerDTO.setIdentificacion(jsonObject.get("identificacion").getAsString());
-                customerDTO.setEmail(jsonObject.get("email").getAsString());
-                customerDTO.setZona(jsonObject.get("zona").getAsString());
-                customerDTO.setDireccion(jsonObject.get("direccion").getAsString());
+
+                customerDTO.setId(jsonObject.has("id") && !jsonObject.get("id").isJsonNull() ? jsonObject.get("id").getAsLong() : null);
+                customerDTO.setName(jsonObject.has("name") && !jsonObject.get("name").isJsonNull() ? jsonObject.get("name").getAsString() : null);
+                customerDTO.setContacto(jsonObject.has("contacto") && !jsonObject.get("contacto").isJsonNull() ? jsonObject.get("contacto").getAsString() : null);
+                customerDTO.setTelefono(jsonObject.has("telefono") && !jsonObject.get("telefono").isJsonNull() ? jsonObject.get("telefono").getAsInt() : 0);
+                customerDTO.setIdentificacion(jsonObject.has("identificacion") && !jsonObject.get("identificacion").isJsonNull() ? jsonObject.get("identificacion").getAsString() : null);
+                customerDTO.setEmail(jsonObject.has("email") && !jsonObject.get("email").isJsonNull() ? jsonObject.get("email").getAsString() : null);
+                customerDTO.setZona(jsonObject.has("zona") && !jsonObject.get("zona").isJsonNull() ? jsonObject.get("zona").getAsString() : null);
+                customerDTO.setDireccion(jsonObject.has("direccion") && !jsonObject.get("direccion").isJsonNull() ? jsonObject.get("direccion").getAsString() : null);
+
                 customerList.add(customerDTO);
             }
         } catch (Exception e) {
