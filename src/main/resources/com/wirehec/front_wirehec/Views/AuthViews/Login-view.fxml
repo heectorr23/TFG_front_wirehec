@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.wirehec.front_wirehec.Controllers.LoginController"
-            prefHeight="400.0" prefWidth="600.0" styleClass="auth-background" stylesheets="@../../Styles/main.css">
-    <VBox alignment="CENTER" spacing="20" layoutX="100" layoutY="50" styleClass="auth-container">
-        <Label text="Inicio de Sesión" styleClass="auth-title"/>
-        <GridPane hgap="10" vgap="10">
-            <padding>
-                <Insets top="10" left="10" right="10" bottom="10"/>
-            </padding>
-            <Label text="Nombre de Usuario:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="auth-label"/>
-            <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="auth-input"/>
-
-            <Label text="Contraseña:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="auth-label"/>
-            <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="auth-input"/>
-        </GridPane>
-        <Button fx:id="loginButton" text="Iniciar Sesión" onAction="#handleLogin" styleClass="auth-primary-button"/>
-        <Button fx:id="goToRegisterButton" text="Ir a Registro" onAction="#navigateToRegister" styleClass="auth-secondary-button"/>
-    </VBox>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="auth-background" stylesheets="@../../Styles/main.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.wirehec.front_wirehec.Controllers.LoginController">
+    <StackPane alignment="CENTER" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <VBox alignment="CENTER" spacing="20" styleClass="auth-container" maxWidth="400.0" maxHeight="400.0">
+            <Label styleClass="auth-title" text="Inicio de Sesión" />
+            <GridPane hgap="15" vgap="15">
+                <padding>
+                    <Insets bottom="15" left="15" right="15" top="15" />
+                </padding>
+                <Label styleClass="auth-label" text="Nombre de Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField fx:id="usernameField" styleClass="auth-input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <Label styleClass="auth-label" text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <PasswordField fx:id="passwordField" styleClass="auth-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            </GridPane>
+            <Button fx:id="loginButton" onAction="#handleLogin" styleClass="auth-primary-button" text="Iniciar Sesión" />
+        </VBox>
+    </StackPane>
 </AnchorPane>

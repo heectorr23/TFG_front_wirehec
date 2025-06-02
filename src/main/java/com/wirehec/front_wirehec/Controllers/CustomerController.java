@@ -1,14 +1,9 @@
 package com.wirehec.front_wirehec.Controllers;
 
-import com.wirehec.front_wirehec.APIs.BillApi.HTTP.Response.GetBIll;
+import com.wirehec.front_wirehec.APIs.CustomerAPI.HTTP.Request.DeleteCustomer;
 import com.wirehec.front_wirehec.APIs.CustomerAPI.HTTP.Response.GetCustomer;
-import com.wirehec.front_wirehec.APIs.ProductAPI.HTTP.Response.GetProduct;
-import com.wirehec.front_wirehec.APIs.SupplierAPI.HTTP.Response.GetSupplierOrder;
 import com.wirehec.front_wirehec.Constants.TokenConstants;
 import com.wirehec.front_wirehec.DTO.CustomerDTO;
-import com.wirehec.front_wirehec.DTO.FacturaDTO;
-import com.wirehec.front_wirehec.DTO.ProductDTO;
-import com.wirehec.front_wirehec.DTO.SupplierOrderDTO;
 import com.wirehec.front_wirehec.Utils.TokenUtils;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
@@ -20,23 +15,24 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.List;
 
-public class MainController {
+public class CustomerController {
 
-    @FXML private VBox menuVBox;
+    @FXML
+    private VBox menuVBox;
     @FXML private Button userDropdown;
     @FXML private VBox userMenu;
-    @FXML private GridPane contentPane;
+    @FXML private BorderPane contentPane;
     @FXML private Label menuLabel;
     @FXML private Button hamburgerButton;
     @FXML private Label userRoleLabel;
@@ -49,26 +45,8 @@ public class MainController {
     @FXML private Button clientesButton;
     @FXML private Button ajustesButton;
 
-    @FXML private TableView<FacturaDTO> billtable;
-    @FXML private TableColumn<FacturaDTO, Long> idColumn;
-    @FXML private TableColumn<FacturaDTO, BigDecimal> priceColumn;
-    @FXML private TableColumn<FacturaDTO, String> zoneColumn;
-    @FXML private TableColumn<FacturaDTO, String> directionColumn;
-
-    @FXML private TableView<SupplierOrderDTO> supplierordertable;
-    @FXML private TableColumn<SupplierOrderDTO, Long> idPedidoProveedorColumn;
-    @FXML private TableColumn<SupplierOrderDTO, Date> fechaPedidoColumn;
-    @FXML private TableColumn<SupplierOrderDTO, Date> fechaEntregaColumn;
-
-    @FXML private TableView<ProductDTO> productTable;
-    @FXML private TableColumn<ProductDTO, Long> idProductColumn;
-    @FXML private TableColumn<ProductDTO, String> nombreProductColumn;
-    @FXML private TableColumn<ProductDTO, String> categoriaProductColumn;
-    @FXML private TableColumn<ProductDTO, BigDecimal> precioVentaProductColumn;
-    @FXML private TableColumn<ProductDTO, Integer> stockProductColumn;
-    @FXML private TableColumn<ProductDTO, BigDecimal> precioCosteProductColumn;
-
     @FXML private TableView<CustomerDTO> clientTable;
+    @FXML private TableColumn<CustomerDTO, Long> idColumn;
     @FXML private TableColumn<CustomerDTO, String> nombreClienteColumn;
     @FXML private TableColumn<CustomerDTO, String> contactoClienteColumn;
     @FXML private TableColumn<CustomerDTO, Integer> telefonoClienteColumn;
@@ -82,7 +60,6 @@ public class MainController {
 
     @FXML
     public void initialize() {
-
         setButtonIcon(inicioButton, "fas-home");
         setButtonIcon(productosButton, "fas-box-open");
         setButtonIcon(contabilidadButton, "fas-chart-line");
@@ -114,23 +91,7 @@ public class MainController {
             ajustesButton.setText(null);
         }
 
-        // Configurar columnas
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("precio"));
-        zoneColumn.setCellValueFactory(new PropertyValueFactory<>("zona"));
-        directionColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
-
-        idPedidoProveedorColumn.setCellValueFactory(new PropertyValueFactory<>("idPedidoProveedor"));
-        fechaPedidoColumn.setCellValueFactory(new PropertyValueFactory<>("fechaPedido"));
-        fechaEntregaColumn.setCellValueFactory(new PropertyValueFactory<>("fechaEntrega"));
-
-        idProductColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        nombreProductColumn.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
-        categoriaProductColumn.setCellValueFactory(new PropertyValueFactory<>("categoriaProducto"));
-        precioVentaProductColumn.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
-        stockProductColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
-        precioCosteProductColumn.setCellValueFactory(new PropertyValueFactory<>("precioCoste"));
-
         nombreClienteColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         contactoClienteColumn.setCellValueFactory(new PropertyValueFactory<>("contacto"));
         telefonoClienteColumn.setCellValueFactory(new PropertyValueFactory<>("telefono"));
@@ -139,51 +100,28 @@ public class MainController {
         zonaClienteColumn.setCellValueFactory(new PropertyValueFactory<>("zona"));
         direccionClienteColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
 
-        // Cargar datos
         cargarDatos();
 
         // Decodificar el token y actualizar el botón userDropdown
-        // Verificar y decodificar el token
         String token = TokenConstants.TOKEN;
         if (token != null && !token.isEmpty()) {
             String userName = TokenUtils.getUserNameFromToken(token);
             String userRole = TokenUtils.getUserRoleFromToken(token);
 
-            System.out.println("Nombre de usuario extraído: " + userName);
-            System.out.println("Rol de usuario extraído: " + userRole);
-
-
             if (userName != null && !userName.isEmpty()) {
                 userDropdown.setText(userName);
-            } else {
-                System.err.println("El token no contiene un nombre de usuario válido.");
             }
 
             if (userRole != null && !userRole.isEmpty()) {
                 userRoleLabel.setText(userRole);
                 userRoleLabel.setVisible(true);
             } else {
-                System.err.println("El token no contiene un rol válido.");
                 userRoleLabel.setVisible(false);
             }
-        } else {
-            System.err.println("El token es nulo o está vacío.");
         }
     }
 
-    private void cargarDatos() {
-        GetBIll getBIll = new GetBIll();
-        List<FacturaDTO> billList = getBIll.sendGetBillRequest();
-        billtable.setItems(FXCollections.observableArrayList(billList));
-
-        GetSupplierOrder getSupplierOrder = new GetSupplierOrder();
-        List<SupplierOrderDTO> orderList = getSupplierOrder.sendGetSupplierOrderRequest();
-        supplierordertable.setItems(FXCollections.observableArrayList(orderList));
-
-        GetProduct getProduct = new GetProduct();
-        List<ProductDTO> productList = getProduct.sendGetProductRequest();
-        productTable.setItems(FXCollections.observableArrayList(productList));
-
+    public void cargarDatos() {
         GetCustomer getCustomer = new GetCustomer();
         List<CustomerDTO> customerList = getCustomer.sendGetCustomerRequest();
         clientTable.setItems(FXCollections.observableArrayList(customerList));
@@ -198,6 +136,85 @@ public class MainController {
         icon.setIconSize(18);
         icon.setIconColor(javafx.scene.paint.Color.WHITE);
         button.setGraphic(icon);
+    }
+
+    @FXML
+    private void handleAddCustomer(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/CustomerViews/AddCustomer-view.fxml"));
+            Parent root = loader.load();
+            AddCustomerController controller = loader.getController();
+            controller.setCustomerController(this); // Pasar referencia del controlador principal
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+            cargarDatos(); // Recargar datos después de cerrar la ventana
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleUpdateCustomer() {
+        CustomerDTO selected = clientTable.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.getId() == null) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Por favor, selecciona un cliente válido.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/CustomerViews/UpdateCustomer-view.fxml"));
+            Parent root = loader.load();
+            UpdateCustomerController controller = loader.getController();
+            controller.setCustomer(selected); // Asegúrate de pasar el cliente con su ID
+            controller.setCustomerController(this);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+            cargarDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteCustomer() {
+        CustomerDTO selected = clientTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Cliente", "Por favor, selecciona un cliente para eliminar.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar este cliente?", ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirmar Eliminación");
+        confirmation.showAndWait();
+
+        if (confirmation.getResult() == ButtonType.YES) {
+            try {
+                Long idCliente = selected.getId();
+                if (idCliente == null) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "El ID del cliente no es válido.");
+                    return;
+                }
+
+                new DeleteCustomer().sendDeleteCustomerRequest(selected.getId());                cargarDatos();
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Ocurrió un error al eliminar el cliente.");
+            }
+        }
+    }
+
+    @FXML
+    private void handleViewCustomer() {
+        CustomerDTO selected = clientTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "Seleccionar Cliente", "Por favor, selecciona un cliente para ver los detalles.");
+            return;
+        }
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles del Cliente", selected.toString());
     }
 
     @FXML
@@ -227,14 +244,14 @@ public class MainController {
             menuVBox.getStyleClass().remove("expanded");
             menuLabel.setVisible(false);
 
-            // Asegurarse de que solo se muestren los íconos
-            inicioButton.setText(null);
-            productosButton.setText(null);
-            contabilidadButton.setText(null);
-            facturasButton.setText(null);
-            empleadosButton.setText(null);
-            clientesButton.setText(null);
-            ajustesButton.setText(null);
+            // Eliminar texto de los botones
+            inicioButton.setText("");
+            productosButton.setText("");
+            contabilidadButton.setText("");
+            facturasButton.setText("");
+            empleadosButton.setText("");
+            clientesButton.setText("");
+            ajustesButton.setText("");
         }
     }
 
@@ -262,7 +279,6 @@ public class MainController {
         ft.play();
         userMenu.setVisible(isUserMenuVisible);
     }
-
     @FXML
     private void handleUserAction() {
         Button source = (Button) userMenu.getScene().getFocusOwner();
@@ -284,7 +300,6 @@ public class MainController {
         }
         toggleUserMenu();
     }
-
     @FXML
     public void navigateToInicio(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/MainViews/hello-view.fxml");
@@ -307,13 +322,6 @@ public class MainController {
         }
         changeScene("/com/wirehec/front_wirehec/Views/EmployeeViews/Employee-view.fxml");
     }
-    private void showAlert(Alert.AlertType alertType, String title, String content) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
     public void navigateToAjustes(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/SettingViews/Setting-View.fxml");
     }
@@ -323,8 +331,6 @@ public class MainController {
     public void navigateToCustomer(ActionEvent event) {
         changeScene("/com/wirehec/front_wirehec/Views/CustomerViews/Customer-view.fxml");
     }
-
-
     private void changeScene(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(MainController.class.getResource(fxmlPath));
@@ -336,5 +342,12 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

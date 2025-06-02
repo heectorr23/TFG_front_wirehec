@@ -15,6 +15,7 @@
             <Button fx:id="contabilidadButton" text="Contabilidad" onAction="#navigateToContabilidad" styleClass="menu-button"/>
             <Button fx:id="facturasButton" text="Facturas" onAction="#navigateToFacturas" styleClass="menu-button"/>
             <Button fx:id="empleadosButton" text="Empleados" onAction="#navigateToEmpleados" styleClass="menu-button"/>
+            <Button fx:id="clientesButton" text="Clientes" onAction="#navigateToCustomer" styleClass="menu-button"/>
             <Button fx:id="ajustesButton" text="Ajustes" onAction="#navigateToAjustes" styleClass="menu-button"/>
         </VBox>
     </left>

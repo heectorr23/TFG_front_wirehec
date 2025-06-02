@@ -51,20 +51,6 @@ public class LoginController {
         }
     }
 
-    @FXML
-    private void navigateToRegister(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wirehec/front_wirehec/Views/AuthViews/Register-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Error al cargar la vista de registro.");
-        }
-    }
-
     private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

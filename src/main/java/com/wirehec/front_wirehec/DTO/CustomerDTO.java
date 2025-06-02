@@ -11,6 +11,7 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class CustomerDTO {
+    private Long id;
 
     private String name;
 
@@ -25,5 +26,4 @@ public class CustomerDTO {
     private String zona;
 
     private String direccion;
-
 }
