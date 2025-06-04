@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddSupplierDetailController" spacing="10" alignment="CENTER" styleClass="form-container">
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddSupplierDetailController" spacing="10" alignment="CENTER" styleClass="form-container" stylesheets="@../../Styles/main.css">
     <Label text="Añadir Detalle de Proveedor" styleClass="form-title"/>
-    <ComboBox fx:id="supplierComboBox" promptText="Seleccionar Proveedor" prefWidth="300"/>
-    <TextField fx:id="idProductField" promptText="ID Producto"/>
-    <TextField fx:id="idProveedorField" promptText="ID Proveedor"/>
-    <TextField fx:id="nombreProveedorField" promptText="Nombre Proveedor"/>
-    <TextField fx:id="cifProveedorField" promptText="CIF Proveedor"/>
-    <TextField fx:id="emailProveedorField" promptText="Email Proveedor"/>
-    <TextField fx:id="categoriaProveedorField" promptText="Categoría Proveedor"/>
-    <TextField fx:id="productoProveedorField" promptText="Producto Proveedor"/>
-    <TextField fx:id="idPedidoField" promptText="ID Pedido (opcional)"/>
-    <DatePicker fx:id="fechaPedidoField" promptText="Fecha Pedido (opcional)"/>
-    <DatePicker fx:id="fechaEntregaField" promptText="Fecha Entrega (opcional)"/>
+    <ComboBox fx:id="supplierComboBox" promptText="Seleccionar Proveedor" prefWidth="300" styleClass="form-input"/>
+    <TextField fx:id="idProductField" promptText="ID Producto" styleClass="form-input"/>
+    <TextField fx:id="idProveedorField" promptText="ID Proveedor" styleClass="form-input"/>
+    <TextField fx:id="nombreProveedorField" promptText="Nombre Proveedor" styleClass="form-input"/>
+    <TextField fx:id="cifProveedorField" promptText="CIF Proveedor" styleClass="form-input"/>
+    <TextField fx:id="emailProveedorField" promptText="Email Proveedor" styleClass="form-input"/>
+    <TextField fx:id="categoriaProveedorField" promptText="Categoría Proveedor" styleClass="form-input"/>
+    <TextField fx:id="productoProveedorField" promptText="Producto Proveedor" styleClass="form-input"/>
+    <TextField fx:id="idPedidoField" promptText="ID Pedido (opcional)" styleClass="form-input"/>
+    <DatePicker fx:id="fechaPedidoField" promptText="Fecha Pedido (opcional)" styleClass="form-input"/>
+    <DatePicker fx:id="fechaEntregaField" promptText="Fecha Entrega (opcional)" styleClass="form-input"/>
     <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="saveButton" text="Guardar" onAction="#handleSave" styleClass="form-button"/>        <Button text="Cancelar" onAction="#handleCancel" styleClass="form-button"/>
+        <Button fx:id="saveButton" text="Guardar" onAction="#handleSave" styleClass="crud-button"/>        <Button text="Cancelar" onAction="#handleCancel" styleClass="crud-button"/>
     </HBox>
 </VBox>

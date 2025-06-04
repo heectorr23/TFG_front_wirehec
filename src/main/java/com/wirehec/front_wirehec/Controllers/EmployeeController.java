@@ -4,15 +4,19 @@ import com.wirehec.front_wirehec.APIs.EmployeeAPI.HTTP.Request.DeleteEmployee;
 import com.wirehec.front_wirehec.APIs.EmployeeAPI.HTTP.Response.GetEmployee;
 import com.wirehec.front_wirehec.Constants.TokenConstants;
 import com.wirehec.front_wirehec.DTO.EmployeeDTO;
+import com.wirehec.front_wirehec.DTO.RoleDTO;
 import com.wirehec.front_wirehec.Utils.TokenUtils;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
@@ -24,6 +28,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EmployeeController {
@@ -49,6 +54,8 @@ public class EmployeeController {
     @FXML private TableColumn<EmployeeDTO, String> nameColumn;
     @FXML private TableColumn<EmployeeDTO, String> emailColumn;
     @FXML private TableColumn<EmployeeDTO, String> roleColumn;
+
+    @FXML private PieChart employeeRoleChart;
 
     private boolean isUserMenuVisible = false;
     private boolean isMenuExpanded = false;
@@ -91,11 +98,22 @@ public class EmployeeController {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         roleColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
                 cellData.getValue().getRoles().stream()
-                        .map(role -> role.getName())
+                        .map(RoleDTO::getName)
                         .collect(Collectors.joining(", "))
         ));
 
         loadEmployees();
+
+        // Listener para actualizar el gráfico cuando cambien los datos de la tabla
+        employeeTable.getItems().addListener((ListChangeListener<EmployeeDTO>) change -> {
+            updateEmployeeRoleChart();
+        });
+
+        // Actualizar gráfico inicialmente
+        updateEmployeeRoleChart();
+
+
+        // Configuración de usuario
         String token = TokenConstants.TOKEN;
         if (token != null && !token.isEmpty()) {
             String userName = TokenUtils.getUserNameFromToken(token);
@@ -104,7 +122,40 @@ public class EmployeeController {
             userRoleLabel.setText(userRole);
         }
     }
+    private void updateEmployeeRoleChart() {
+        ObservableList<EmployeeDTO> employees = employeeTable.getItems();
+        if (employees != null && !employees.isEmpty()) {
+            Map<String, Long> roleCounts = employees.stream()
+                    .flatMap(employee -> employee.getRoles().stream())
+                    .collect(Collectors.groupingBy(RoleDTO::getName, Collectors.counting()));
 
+            ObservableList<PieChart.Data> chartData = FXCollections.observableArrayList();
+            roleCounts.forEach((role, count) -> chartData.add(new PieChart.Data(role, count)));
+
+            employeeRoleChart.setData(chartData);
+        } else {
+            employeeRoleChart.setData(FXCollections.observableArrayList());
+        }
+    }
+    private void loadEmployeeRoleChart() {
+        GetEmployee getEmployee = new GetEmployee();
+        List<EmployeeDTO> employees = getEmployee.sendGetEmployeeRequest();
+
+        if (employees != null && !employees.isEmpty()) {
+            // Contar empleados por roles
+            Map<String, Long> roleCounts = employees.stream()
+                    .flatMap(employee -> employee.getRoles().stream())
+                    .collect(Collectors.groupingBy(RoleDTO::getName, Collectors.counting()));
+
+            // Crear datos para el gráfico
+            ObservableList<PieChart.Data> chartData = FXCollections.observableArrayList();
+            roleCounts.forEach((role, count) -> chartData.add(new PieChart.Data(role, count)));
+
+            employeeRoleChart.setData(chartData);
+        } else {
+            System.err.println("No se encontraron empleados o la lista está vacía.");
+        }
+    }
     private void loadEmployees() {
         GetEmployee getEmployee = new GetEmployee();
         List<EmployeeDTO> employees = getEmployee.sendGetEmployeeRequest();
@@ -112,8 +163,9 @@ public class EmployeeController {
             employeeTable.setItems(FXCollections.observableArrayList(employees));
         } else {
             System.err.println("No se encontraron empleados o la lista está vacía.");
-            employeeTable.setItems(FXCollections.observableArrayList()); // Asegura que la tabla esté vacía si no hay datos
+            employeeTable.setItems(FXCollections.observableArrayList());
         }
+        updateEmployeeRoleChart(); // Actualizar el gráfico después de cargar los datos
     }
 
     private void setButtonIcon(Button button, String iconLiteral) {
@@ -286,7 +338,26 @@ public class EmployeeController {
             return;
         }
 
-        showAlert(Alert.AlertType.INFORMATION, "Detalles del Empleado", selectedEmployee.toString());
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Detalles del Empleado");
+        dialog.setHeaderText("Información del Empleado");
+
+        VBox content = new VBox(10);
+        content.getChildren().addAll(
+                new Label("Nombre: " + selectedEmployee.getNombreEmpleado()),
+                new Label("NIF: " + selectedEmployee.getNifEmpleado()),
+                new Label("Teléfono: " + selectedEmployee.getTelefonoEmpleado()),
+                new Label("Email: " + selectedEmployee.getEmail()),
+                new Label("Usuario: " + selectedEmployee.getUsername()),
+                new Label("Rol: " + selectedEmployee.getRoles().stream()
+                        .map(role -> role.getName())
+                        .collect(Collectors.joining(", "))),
+                new Label("Salario: " + selectedEmployee.getSalario())
+        );
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        dialog.showAndWait();
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String content) {

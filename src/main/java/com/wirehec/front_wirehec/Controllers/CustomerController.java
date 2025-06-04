@@ -8,11 +8,14 @@ import com.wirehec.front_wirehec.Utils.TokenUtils;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -25,11 +28,11 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CustomerController {
-
-    @FXML
-    private VBox menuVBox;
+    @FXML private VBox menuVBox;
     @FXML private Button userDropdown;
     @FXML private VBox userMenu;
     @FXML private BorderPane contentPane;
@@ -54,6 +57,8 @@ public class CustomerController {
     @FXML private TableColumn<CustomerDTO, String> emailClienteColumn;
     @FXML private TableColumn<CustomerDTO, String> zonaClienteColumn;
     @FXML private TableColumn<CustomerDTO, String> direccionClienteColumn;
+
+    @FXML private PieChart zonaClienteChart;
 
     private boolean isUserMenuVisible = false;
     private boolean isMenuExpanded = false;
@@ -101,6 +106,11 @@ public class CustomerController {
         direccionClienteColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
 
         cargarDatos();
+        clientTable.getItems().addListener((ListChangeListener<CustomerDTO>) change -> updateZonaClienteChart());
+
+        // Actualizar gráfico inicialmente
+        updateZonaClienteChart();
+
 
         // Decodificar el token y actualizar el botón userDropdown
         String token = TokenConstants.TOKEN;
@@ -120,11 +130,30 @@ public class CustomerController {
             }
         }
     }
+    private void updateZonaClienteChart() {
+        ObservableList<CustomerDTO> customers = clientTable.getItems();
+        if (customers != null && !customers.isEmpty()) {
+            // Contar clientes por zona
+            Map<String, Long> zonaCounts = customers.stream()
+                    .collect(Collectors.groupingBy(CustomerDTO::getZona, Collectors.counting()));
 
+            // Crear datos para el gráfico
+            ObservableList<PieChart.Data> chartData = FXCollections.observableArrayList();
+            zonaCounts.forEach((zona, count) -> chartData.add(new PieChart.Data(zona, count)));
+
+            // Actualizar el gráfico
+            zonaClienteChart.setData(chartData);
+        } else {
+            // Vaciar el gráfico si no hay datos
+            zonaClienteChart.setData(FXCollections.observableArrayList());
+        }
+    }
     public void cargarDatos() {
         GetCustomer getCustomer = new GetCustomer();
         List<CustomerDTO> customerList = getCustomer.sendGetCustomerRequest();
         clientTable.setItems(FXCollections.observableArrayList(customerList));
+
+        updateZonaClienteChart();
     }
 
     private void setButtonIcon(Button button, String iconLiteral) {
@@ -173,7 +202,6 @@ public class CustomerController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             stage.showAndWait();
-            cargarDatos();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -214,7 +242,24 @@ public class CustomerController {
             return;
         }
 
-        showAlert(Alert.AlertType.INFORMATION, "Detalles del Cliente", selected.toString());
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Detalles del Cliente");
+        dialog.setHeaderText("Información del Cliente");
+
+        VBox content = new VBox(10);
+        content.getChildren().addAll(
+                new Label("Nombre: " + selected.getName()),
+                new Label("Contacto: " + selected.getContacto()),
+                new Label("Teléfono: " + selected.getTelefono()),
+                new Label("Identificación: " + selected.getIdentificacion()),
+                new Label("Email: " + selected.getEmail()),
+                new Label("Zona: " + selected.getZona()),
+                new Label("Dirección: " + selected.getDireccion())
+        );
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        dialog.showAndWait();
     }
 
     @FXML

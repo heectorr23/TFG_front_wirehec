@@ -2,49 +2,46 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddEmployeeController" stylesheets="@../../Styles/main.css">
-    <Label text="Añadir Empleado" styleClass="title"/>
-    <ScrollPane fitToWidth="true" fitToHeight="true">
+<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddEmployeeController" styleClass="form-container" stylesheets="@../../Styles/main.css">
+    <Label text="Añadir Empleado" styleClass="form-title"/>
+    <ScrollPane fitToWidth="true" fitToHeight="true" prefWidth="800" prefHeight="600">
         <GridPane hgap="15" vgap="15" styleClass="form-grid" alignment="CENTER">
-            <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="NIF:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="nifField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="NIF:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="nifField" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Teléfono:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="phoneField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Teléfono:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="phoneField" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <TextField fx:id="emailField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="emailField" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Usuario:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <TextField fx:id="usernameField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            <Label text="Usuario:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="usernameField" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Contraseña:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-            <PasswordField fx:id="passwordField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            <Label text="Contraseña:" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="form-label"/>
+            <PasswordField fx:id="passwordField" GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Beneficio:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-            <TextField fx:id="benefitField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+            <Label text="Salario:" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="salaryField" GridPane.rowIndex="7" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Salario:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-            <TextField fx:id="salaryField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+            <Label text="Rol:" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="form-label"/>
+            <ComboBox fx:id="roleComboBox" GridPane.rowIndex="8" GridPane.columnIndex="1" promptText="Selecciona un rol" styleClass="form-input"/>
 
-            <Label text="Rol:" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="roleComboBox" GridPane.rowIndex="12" GridPane.columnIndex="1" promptText="Selecciona un rol"/>
+            <Label text="Fecha de Entrada:" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="form-label"/>
+            <DatePicker fx:id="entryDatePicker" GridPane.rowIndex="9" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Fecha de Entrada:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-            <DatePicker fx:id="entryDatePicker" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+            <Label text="Hora de Entrada:" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="entryTimeField" promptText="HH:mm" GridPane.rowIndex="10" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Hora de Entrada:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
-            <TextField fx:id="entryTimeField" promptText="HH:mm" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+            <Label text="Fecha de Salida:" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="form-label"/>
+            <DatePicker fx:id="exitDatePicker" GridPane.rowIndex="11" GridPane.columnIndex="1" styleClass="form-input"/>
 
-            <Label text="Fecha de Salida:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-            <DatePicker fx:id="exitDatePicker" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
-
-            <Label text="Hora de Salida:" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
-            <TextField fx:id="exitTimeField" promptText="HH:mm" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+            <Label text="Hora de Salida:" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="exitTimeField" promptText="HH:mm" GridPane.rowIndex="12" GridPane.columnIndex="1" styleClass="form-input"/>
         </GridPane>
     </ScrollPane>
-    <Button text="Guardar" onAction="#saveEmployee" styleClass="primary-button"/>
+    <Button text="Guardar" onAction="#saveEmployee" styleClass="crud-button"/>
 </VBox>

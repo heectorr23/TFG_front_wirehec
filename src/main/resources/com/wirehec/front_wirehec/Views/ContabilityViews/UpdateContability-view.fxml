@@ -3,21 +3,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.UpdateContabilityController" stylesheets="@../../Styles/main.css">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.UpdateContabilityController" styleClass="form-container" stylesheets="@../../Styles/main.css">
     <top>
-        <Label text="Actualizar Contabilidad" styleClass="header-title" BorderPane.alignment="CENTER"/>
+        <Label text="Actualizar Contabilidad" styleClass="form-title" BorderPane.alignment="CENTER"/>
     </top>
     <center>
         <GridPane hgap="10" vgap="10" alignment="CENTER">
             <padding>
                 <Insets top="20" left="20" right="20" bottom="20"/>
             </padding>
-            <Label text="Presupuesto:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="presupuestoField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-            <Label text="Beneficio:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="beneficioField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-            <Label text="Gasto:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="gastoField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Presupuesto:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="presupuestoField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-input"/>
+            <Label text="Beneficio:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="beneficioField" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-input"/>
+            <Label text="Gasto:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="gastoField" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-input"/>
         </GridPane>
     </center>
     <bottom>

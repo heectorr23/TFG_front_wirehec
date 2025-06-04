@@ -3,18 +3,18 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddProductController" spacing="10" alignment="CENTER">
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddProductController" spacing="20" alignment="CENTER" styleClass="form-container" stylesheets="@../../Styles/main.css">
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets top="30" right="30" bottom="30" left="30"/>
     </padding>
     <Label text="Añadir Producto" styleClass="form-title"/>
-    <TextField fx:id="nameField" promptText="Nombre"/>
-    <ComboBox fx:id="categoriaComboBox" promptText="Selecciona una categoría" />
-    <TextField fx:id="priceField" promptText="Precio"/>
-    <TextField fx:id="stockField" promptText="Stock"/>
-    <TextField fx:id="costPriceField" promptText="Precio de Coste"/>
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Guardar" onAction="#handleSave" styleClass="form-button"/>
-        <Button text="Cancelar" onAction="#handleCancel" styleClass="form-button"/>
+    <TextField fx:id="nameField" promptText="Nombre" styleClass="form-input"/>
+    <ComboBox fx:id="categoriaComboBox" promptText="Selecciona una categoría" styleClass="form-input"/>
+    <TextField fx:id="priceField" promptText="Precio" styleClass="form-input"/>
+    <TextField fx:id="stockField" promptText="Stock" styleClass="form-input"/>
+    <TextField fx:id="costPriceField" promptText="Precio de Coste" styleClass="form-input"/>
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Guardar" onAction="#handleSave" styleClass="crud-button"/>
+        <Button text="Cancelar" onAction="#handleCancel" styleClass="crud-button"/>
     </HBox>
 </VBox>

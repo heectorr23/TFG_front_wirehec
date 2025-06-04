@@ -2,9 +2,11 @@ package com.wirehec.front_wirehec.Controllers;
 
 import com.wirehec.front_wirehec.APIs.CustomerAPI.HTTP.Request.PostCustomer;
 import com.wirehec.front_wirehec.DTO.CustomerDTO;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -15,10 +17,15 @@ public class AddCustomerController {
     @FXML private TextField telefonoField;
     @FXML private TextField identificacionField;
     @FXML private TextField emailField;
-    @FXML private TextField zonaField;
+    @FXML private ComboBox<String> zonaComboBox;
     @FXML private TextField direccionField;
 
     private CustomerController customerController;
+
+    @FXML
+    private void initialize() {
+        zonaComboBox.setItems(FXCollections.observableArrayList("Norte", "Sur", "Centro", "Este", "Oeste"));
+    }
 
     public void setCustomerController(CustomerController customerController) {
         this.customerController = customerController;
@@ -38,7 +45,7 @@ public class AddCustomerController {
             customer.setTelefono(Integer.parseInt(telefonoField.getText()));
             customer.setIdentificacion(identificacionField.getText());
             customer.setEmail(emailField.getText());
-            customer.setZona(zonaField.getText());
+            customer.setZona(zonaComboBox.getValue());
             customer.setDireccion(direccionField.getText());
 
             new PostCustomer().sendPostCustomerRequest(customer);
@@ -67,7 +74,7 @@ public class AddCustomerController {
                 !telefonoField.getText().isEmpty() &&
                 !identificacionField.getText().isEmpty() &&
                 !emailField.getText().isEmpty() &&
-                !zonaField.getText().isEmpty() &&
+                zonaComboBox.getValue() != null &&
                 !direccionField.getText().isEmpty();
     }
 

@@ -227,7 +227,17 @@ public class ContabilityController {
             return;
         }
 
-        showAlert(Alert.AlertType.INFORMATION, "Detalles de Contabilidad", selected.toString());
+        // Crear un mensaje con los detalles formateados
+        String details = String.format(
+                "ID: %d\nPresupuesto Mensual: %.2f\nBeneficio: %.2f\nGasto: %.2f",
+                selected.getIdContabilidad(),
+                selected.getPresupuestomensual(),
+                selected.getBeneficio(),
+                selected.getGasto()
+        );
+
+        // Mostrar los detalles en un cuadro de diálogo
+        showAlert(Alert.AlertType.INFORMATION, "Detalles de Contabilidad", details);
     }
 
     @FXML

@@ -282,7 +282,17 @@ public class BillController {
             return;
         }
 
-        showAlert(Alert.AlertType.INFORMATION, "Detalles de la Factura", selectedBill.toString());
+        // Crear un mensaje con los detalles formateados
+        String details = String.format(
+                "ID: %d\nPrecio: %.2f\nZona: %s\nDirección: %s",
+                selectedBill.getId(),
+                selectedBill.getPrecio(),
+                selectedBill.getZona() == null ? "Sin Zona" : selectedBill.getZona(),
+                selectedBill.getDireccion()
+        );
+
+        // Mostrar los detalles en un cuadro de diálogo
+        showAlert(Alert.AlertType.INFORMATION, "Detalles de la Factura", details);
     }
 
     @FXML
