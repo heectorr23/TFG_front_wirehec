@@ -3,27 +3,27 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddContabilityController" stylesheets="@../../Styles/main.css">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.wirehec.front_wirehec.Controllers.AddContabilityController" styleClass="form-container" stylesheets="@../../Styles/main.css">
     <top>
-        <Label text="Añadir Contabilidad" styleClass="header-title" BorderPane.alignment="CENTER"/>
+        <Label text="Añadir Contabilidad" styleClass="form-title" BorderPane.alignment="CENTER" />
     </top>
     <center>
         <GridPane hgap="10" vgap="10" alignment="CENTER">
             <padding>
                 <Insets top="20" left="20" right="20" bottom="20"/>
             </padding>
-            <Label text="Presupuesto:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="presupuestoField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-            <Label text="Beneficio:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="beneficioField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-            <Label text="Gasto:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="gastoField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Presupuesto:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="presupuestoField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-input"/>
+            <Label text="Beneficio:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="beneficioField" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-input"/>
+            <Label text="Gasto:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="gastoField" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-input"/>
         </GridPane>
     </center>
     <bottom>
         <HBox alignment="CENTER" spacing="10" BorderPane.alignment="CENTER">
-            <Button fx:id="saveButton" text="Guardar" onAction="#handleSave" />
-            <Button text="Cancelar" onAction="#handleCancel" styleClass="crud-button"/>
+            <Button fx:id="saveButton" text="Guardar" onAction="#handleSave" styleClass="crud-button"/>
+            <Button text="Cancelar" onAction="#handleCancel" styleClass="crud-button" />
         </HBox>
     </bottom>
 </BorderPane>
