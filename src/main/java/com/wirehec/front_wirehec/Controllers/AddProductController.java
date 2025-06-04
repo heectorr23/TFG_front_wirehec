@@ -4,6 +4,7 @@ import com.wirehec.front_wirehec.APIs.ProductAPI.HTTP.Request.PostProduct;
 import com.wirehec.front_wirehec.DTO.ProductDTO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -26,19 +27,39 @@ public class AddProductController {
     @FXML
     private void handleSave() {
         try {
-            String name = nameField.getText();
-            String category = categoriaComboBox.getValue();
+            // Validar que los campos no estén vacíos
+            if (nameField.getText().isEmpty() || categoriaComboBox.getValue() == null ||
+                    priceField.getText().isEmpty() || stockField.getText().isEmpty() ||
+                    costPriceField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Todos los campos son obligatorios.");
+                return;
+            }
+
+            // Validar que los valores numéricos sean correctos
             BigDecimal price = new BigDecimal(priceField.getText());
             int stock = Integer.parseInt(stockField.getText());
             BigDecimal costPrice = new BigDecimal(costPriceField.getText());
 
+            // Crear el producto
+            String name = nameField.getText();
+            String category = categoriaComboBox.getValue();
             ProductDTO product = new ProductDTO(null, name, category, price, stock, costPrice);
             new PostProduct().sendPostProductRequest(product);
 
             closeWindow();
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Los campos de precio y stock deben ser valores numéricos.");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML

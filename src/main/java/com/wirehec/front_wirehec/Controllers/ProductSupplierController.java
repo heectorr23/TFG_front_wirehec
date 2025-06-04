@@ -24,8 +24,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.PieChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
@@ -38,6 +37,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ProductSupplierController {
@@ -63,6 +63,8 @@ public class ProductSupplierController {
     @FXML private TableColumn<ProductDTO, String> nombreProductColumn;
     @FXML private TableColumn<ProductDTO, String> categoriaProductColumn;
     @FXML private TableColumn<ProductDTO, BigDecimal> precioVentaProductColumn;
+    @FXML private TableColumn<ProductDTO, Integer> stockProductColumn;
+    @FXML private TableColumn<ProductDTO, BigDecimal> precioCosteProductColumn;
 
     @FXML private TableView<SupplierDTO> supplierTable;
     @FXML private TableColumn<SupplierDTO, Long> idSupplierColumn;
@@ -120,6 +122,8 @@ public class ProductSupplierController {
         nombreProductColumn.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
         categoriaProductColumn.setCellValueFactory(new PropertyValueFactory<>("categoriaProducto"));
         precioVentaProductColumn.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
+        stockProductColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        precioCosteProductColumn.setCellValueFactory(new PropertyValueFactory<>("precioCoste"));
 
         idSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("idProveedor"));
         nombreSupplierColumn.setCellValueFactory(new PropertyValueFactory<>("nombreProveedor"));
@@ -181,6 +185,8 @@ public class ProductSupplierController {
 
         // Añadir las columnas a la tabla
         supplierDetailTable.getColumns().setAll(idSupplierDetailColumn, supplierColumn, ordersColumn);
+
+        configurarGraficoPedidos();
     }
     private void cargarDatos() {
         try {
@@ -437,7 +443,8 @@ public class ProductSupplierController {
             // Eliminar la llamada redundante a sendPostSupplierDetailRequest
             SupplierDetailDTO newDetail = controller.getSupplierDetail();
             if (newDetail != null) {
-                cargarDatos(); // Solo recargar datos si se añadió un nuevo detalle
+                cargarDatos();
+                configurarGraficoPedidos();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -518,6 +525,36 @@ public class ProductSupplierController {
         }
     }
 
+    private void configurarGraficoPedidos() {
+        GetSupplierOrder getSupplierOrder = new GetSupplierOrder();
+        List<SupplierOrderDTO> orders = getSupplierOrder.sendGetSupplierOrderRequest();
+
+        if (orders == null || orders.isEmpty()) {
+            System.out.println("No se encontraron pedidos de proveedores.");
+            return;
+        }
+
+        Map<String, Long> pedidosPorFecha = orders.stream()
+                .collect(Collectors.groupingBy(
+                        order -> order.getFechaPedido().toString(),
+                        Collectors.counting()
+                ));
+
+        supplierOrdersChart.getData().clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Pedidos por Fecha");
+
+        pedidosPorFecha.forEach((fecha, cantidad) -> {
+            series.getData().add(new XYChart.Data<>(fecha, cantidad));
+        });
+
+        supplierOrdersChart.getData().add(series);
+        CategoryAxis xAxis = (CategoryAxis) supplierOrdersChart.getXAxis();
+        xAxis.setAutoRanging(true);
+
+        NumberAxis yAxis = (NumberAxis) supplierOrdersChart.getYAxis();
+        yAxis.setAutoRanging(true);
+    }
     private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

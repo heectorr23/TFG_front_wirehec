@@ -50,10 +50,33 @@ public class AddSupplierDetailController {
         } else {
             showAlert(Alert.AlertType.WARNING, "Advertencia", "No se encontraron proveedores.");
         }
-            System.out.println("saveButton: " + saveButton); // Verificar si el botón se inicializa
-            if (saveButton == null) {
-                System.err.println("El botón saveButton no está inicializado. Verifica el archivo FXML.");
+
+        // Configurar el CellFactory para mostrar solo el nombre, número y producto
+        supplierComboBox.setCellFactory(param -> new ListCell<SupplierDTO>() {
+            @Override
+            protected void updateItem(SupplierDTO item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNombreProveedor() + " - " + item.getCifProveedor() + " - " + item.getProductoProveedor());
+                }
             }
+        });
+
+        // Mostrar el mismo formato en el ComboBox cuando se selecciona un elemento
+        supplierComboBox.setButtonCell(new ListCell<SupplierDTO>() {
+            @Override
+            protected void updateItem(SupplierDTO item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNombreProveedor() + " - " + item.getCifProveedor() + " - " + item.getProductoProveedor());
+                }
+            }
+        });
+
         supplierComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 idProveedorField.setText(String.valueOf(newValue.getIdProveedor()));
@@ -98,13 +121,17 @@ public class AddSupplierDetailController {
 
     @FXML
     private void handleSave() {
-        if (isSaveInProgress) {
-            return; // Evitar múltiples ejecuciones
-        }
-        isSaveInProgress = true; // Marcar que la operación está en progreso
-        saveButton.setDisable(true); // Deshabilitar el botón "Guardar"
-
         try {
+            // Validar que los campos no estén vacíos
+            if (supplierComboBox.getValue() == null || idProveedorField.getText().isEmpty() ||
+                    nombreProveedorField.getText().isEmpty() || cifProveedorField.getText().isEmpty() ||
+                    emailProveedorField.getText().isEmpty() || categoriaProveedorField.getText().isEmpty() ||
+                    productoProveedorField.getText().isEmpty() || fechaPedidoField.getValue() == null ||
+                    fechaEntregaField.getValue() == null) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Todos los campos son obligatorios.");
+                return;
+            }
+
             // Crear el detalle del proveedor
             supplierDetail = new SupplierDetailDTO();
             supplierDetail.setSupplier(supplierComboBox.getValue());
@@ -119,16 +146,19 @@ public class AddSupplierDetailController {
 
             // Enviar el detalle con el pedido a la base de datos
             new PostSupplierDetail().sendPostSupplierDetailRequest(supplierDetail);
+
+            closeWindow();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            isSaveInProgress = false; // Restablecer la bandera
-            saveButton.setDisable(false); // Habilitar el botón "Guardar"
-
-            // Cerrar la ventana
-            Stage stage = (Stage) supplierComboBox.getScene().getWindow();
-            stage.close();
         }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
@@ -163,12 +193,9 @@ public class AddSupplierDetailController {
     public SupplierDetailDTO getSupplierDetail() {
         return supplierDetail;
     }
-
-    private void showAlert(Alert.AlertType alertType, String title, String content) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+    @FXML
+    private void closeWindow() {
+        Stage stage = (Stage) supplierComboBox.getScene().getWindow();
+        stage.close();
     }
 }

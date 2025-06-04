@@ -29,6 +29,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
@@ -176,11 +177,21 @@ public class MainController {
 
         GetSupplierOrder getSupplierOrder = new GetSupplierOrder();
         List<SupplierOrderDTO> orderList = getSupplierOrder.sendGetSupplierOrderRequest();
-        supplierordertable.setItems(FXCollections.observableArrayList(orderList));
+
+        List<SupplierOrderDTO> filteredOrders = orderList.stream()
+                .filter(order -> order.getFechaEntrega().isAfter(LocalDate.now()))
+                .toList();
+
+        supplierordertable.setItems(FXCollections.observableArrayList(filteredOrders));
 
         GetProduct getProduct = new GetProduct();
         List<ProductDTO> productList = getProduct.sendGetProductRequest();
-        productTable.setItems(FXCollections.observableArrayList(productList));
+
+        List<ProductDTO> filteredProducts = productList.stream()
+                .filter(product -> product.getStock() > 0)
+                .toList();
+
+        productTable.setItems(FXCollections.observableArrayList(filteredProducts));
 
         GetCustomer getCustomer = new GetCustomer();
         List<CustomerDTO> customerList = getCustomer.sendGetCustomerRequest();
