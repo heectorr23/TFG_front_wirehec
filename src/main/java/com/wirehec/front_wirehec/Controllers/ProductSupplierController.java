@@ -365,7 +365,17 @@ public class ProductSupplierController {
             return;
         }
 
-        showAlert(Alert.AlertType.INFORMATION, "Detalles del Producto", selectedProduct.toString());
+        String details = String.format(
+                "ID: %d\nNombre: %s\nCategoría: %s\nPrecio Venta: %.2f\nPrecio Compra: %.2f\nStock: %d",
+                selectedProduct.getId(),
+                selectedProduct.getNombreProducto(),
+                selectedProduct.getCategoriaProducto(),
+                selectedProduct.getPrecioVenta(),
+                selectedProduct.getPrecioCoste(),
+                selectedProduct.getStock()
+        );
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles del Producto", details);
     }
     @FXML
     private void handleAddSupplier() {
@@ -424,7 +434,17 @@ public class ProductSupplierController {
             return;
         }
 
-        showAlert(Alert.AlertType.INFORMATION, "Detalles del Proveedor", selectedSupplier.toString());
+        String details = String.format(
+                "ID: %d\nNombre: %s\nCIF: %s\nEmail: %s\nCategoría: %s\nProducto: %s",
+                selectedSupplier.getIdProveedor(),
+                selectedSupplier.getNombreProveedor(),
+                selectedSupplier.getCifProveedor(),
+                selectedSupplier.getEmailProveedor(),
+                selectedSupplier.getCategoriaProveedor(),
+                selectedSupplier.getProductoProveedor()
+        );
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles del Proveedor", details);
     }
     @FXML
     private void handleAddSupplierDetail() {
@@ -505,7 +525,21 @@ public class ProductSupplierController {
             return;
         }
 
-        showAlert(Alert.AlertType.INFORMATION, "Detalles del Detalle de Proveedor", selectedDetail.toString());
+        String ordersDetails = selectedDetail.getSupplierOrders().stream()
+                .map(order -> String.format("ID Pedido: %d, Fecha Pedido: %s, Fecha Entrega: %s",
+                        order.getIdPedidoProveedor(),
+                        order.getFechaPedido(),
+                        order.getFechaEntrega()))
+                .collect(Collectors.joining("\n"));
+
+        String details = String.format(
+                "ID Detalle: %d\nProveedor: %s\nPedidos:\n%s",
+                selectedDetail.getIdDetalleProveedor(),
+                selectedDetail.getSupplier().getNombreProveedor(),
+                ordersDetails.isEmpty() ? "Sin pedidos" : ordersDetails
+        );
+
+        showAlert(Alert.AlertType.INFORMATION, "Detalles del Detalle de Proveedor", details);
     }
 
     private void openModal(String fxmlPath, String title) {
