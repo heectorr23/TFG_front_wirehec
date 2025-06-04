@@ -2,9 +2,11 @@ package com.wirehec.front_wirehec.Controllers;
 
 import com.wirehec.front_wirehec.APIs.CustomerAPI.HTTP.Request.PutCustomer;
 import com.wirehec.front_wirehec.DTO.CustomerDTO;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -15,11 +17,19 @@ public class UpdateCustomerController {
     @FXML private TextField telefonoField;
     @FXML private TextField identificacionField;
     @FXML private TextField emailField;
-    @FXML private TextField zonaField;
+    @FXML private ComboBox<String> zonaComboBox;
     @FXML private TextField direccionField;
 
     private CustomerDTO customer;
     private CustomerController customerController;
+
+    @FXML
+    private void initialize() {
+        zonaComboBox.setItems(FXCollections.observableArrayList("Norte", "Sur", "Centro", "Este", "Oeste"));
+        if (customer != null) {
+            zonaComboBox.setValue(customer.getZona());
+        }
+    }
 
     public void setCustomer(CustomerDTO customer) {
         this.customer = customer;
@@ -29,7 +39,7 @@ public class UpdateCustomerController {
             telefonoField.setText(String.valueOf(customer.getTelefono()));
             identificacionField.setText(customer.getIdentificacion());
             emailField.setText(customer.getEmail());
-            zonaField.setText(customer.getZona());
+            zonaComboBox.setValue(customer.getZona());
             direccionField.setText(customer.getDireccion());
         }
     }
@@ -46,7 +56,6 @@ public class UpdateCustomerController {
         }
 
         try {
-            // Actualizar solo los campos que no están vacíos
             if (nameField.getText() != null && !nameField.getText().isEmpty()) {
                 customer.setName(nameField.getText());
             }
@@ -61,23 +70,19 @@ public class UpdateCustomerController {
                     return;
                 }
             }
-            // Si el campo está vacío, no sobrescribir el valor actual
-            if (identificacionField.getText() != null) {
-                if (!identificacionField.getText().isEmpty()) {
-                    customer.setIdentificacion(identificacionField.getText());
-                }
+            if (identificacionField.getText() != null && !identificacionField.getText().isEmpty()) {
+                customer.setIdentificacion(identificacionField.getText());
             }
             if (emailField.getText() != null && !emailField.getText().isEmpty()) {
                 customer.setEmail(emailField.getText());
             }
-            if (zonaField.getText() != null && !zonaField.getText().isEmpty()) {
-                customer.setZona(zonaField.getText());
+            if (zonaComboBox.getValue() != null) {
+                customer.setZona(zonaComboBox.getValue());
             }
             if (direccionField.getText() != null && !direccionField.getText().isEmpty()) {
                 customer.setDireccion(direccionField.getText());
             }
 
-            // Enviar la solicitud PUT con el ID del cliente
             new PutCustomer().sendPutCustomerRequest(customer, customer.getId());
 
             if (customerController != null) {
@@ -94,16 +99,6 @@ public class UpdateCustomerController {
     @FXML
     private void handleCancel(ActionEvent event) {
         closeWindow();
-    }
-
-    private boolean validateFields() {
-        return nameField.getText() != null && !nameField.getText().isEmpty() &&
-                contactoField.getText() != null && !contactoField.getText().isEmpty() &&
-                telefonoField.getText() != null && !telefonoField.getText().isEmpty() &&
-                identificacionField.getText() != null && !identificacionField.getText().isEmpty() &&
-                emailField.getText() != null && !emailField.getText().isEmpty() &&
-                zonaField.getText() != null && !zonaField.getText().isEmpty() &&
-                direccionField.getText() != null && !direccionField.getText().isEmpty();
     }
 
     private void closeWindow() {
