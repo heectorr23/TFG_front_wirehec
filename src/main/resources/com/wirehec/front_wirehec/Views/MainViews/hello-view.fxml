@@ -26,12 +26,12 @@
          <Button fx:id="hamburgerButton" styleClass="menu-button" onAction="#toggleMenu"/>
          <Label fx:id="menuLabel" text="MENU" styleClass="menu-label" visible="false"/>
          <Region HBox.hgrow="ALWAYS"/>
-         <Label text="DASHBOARD" styleClass="header-title"/> <!-- Título actualizado -->
+         <Label text="DASHBOARD" styleClass="header-title"/>
          <Region HBox.hgrow="ALWAYS"/>
          <Button fx:id="userDropdown" text="Nombre" styleClass="user-button" onAction="#toggleUserMenu"/>
          <VBox fx:id="userMenu" visible="false" styleClass="user-menu">
-            <Button text="Cambiar Contraseña" onAction="#handleUserAction"/>
-            <Button text="Mi Perfil" onAction="#handleUserAction"/>
+            <Button text="Cambiar Contraseña" onAction="#navigateToAjustes"/>
+            <Button text="Mi Perfil" onAction="#navigateToAjustes"/>
             <Button text="Cerrar Sesión" onAction="#handleUserAction"/>
          </VBox>
          <Label fx:id="userRoleLabel" text="Rol" styleClass="user-role-label" visible="true"/>
@@ -51,7 +51,7 @@
             <ColumnConstraints hgrow="ALWAYS"/>
          </columnConstraints>
          <children>
-            <!-- Facturas -->
+
             <VBox alignment="CENTER" spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0">
                <Label text="Facturas Realizadas" styleClass="section-title"/>
                <TableView fx:id="billtable" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
@@ -64,7 +64,6 @@
                </TableView>
             </VBox>
 
-            <!-- Pedidos por llegar -->
             <VBox alignment="CENTER" spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="1">
                <Label text="Pedidos Por Llegar" styleClass="section-title"/>
                <TableView fx:id="supplierordertable" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
@@ -76,7 +75,6 @@
                </TableView>
             </VBox>
 
-            <!-- Productos en stock -->
             <VBox alignment="CENTER" spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="0">
                <Label text="Productos en Stock" styleClass="section-title"/>
                <TableView fx:id="productTable" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
@@ -91,7 +89,6 @@
                </TableView>
             </VBox>
 
-            <!-- Clientes -->
             <VBox alignment="CENTER" spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="1">
                <Label text="Clientes" styleClass="section-title"/>
                <TableView fx:id="clientTable" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
