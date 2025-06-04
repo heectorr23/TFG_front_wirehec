@@ -36,7 +36,7 @@ public class AddEmployeeController {
             String password = passwordField.getText();
             String email = emailField.getText();
             String role = roleComboBox.getValue();
-            int benefit = Integer.parseInt(benefitField.getText());
+
             BigDecimal salary = new BigDecimal(salaryField.getText());
             int phone = Integer.parseInt(phoneField.getText());
             String entryTimeText = entryTimeField.getText();
@@ -69,7 +69,7 @@ public class AddEmployeeController {
                     .passwordEmpleado(password)
                     .email(email)
                     .roles(Collections.singletonList(roleDTO))
-                    .beneficioEmpleado(benefit)
+
                     .salario(salary)
                     .telefonoEmpleado(phone)
                     .horaEntrada(entryDateTime)

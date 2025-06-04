@@ -2,8 +2,10 @@ package com.wirehec.front_wirehec.Controllers;
 
 import com.wirehec.front_wirehec.APIs.BillApi.HTTP.Request.PostBill;
 import com.wirehec.front_wirehec.DTO.FacturaDTO;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -12,14 +14,17 @@ import java.math.BigDecimal;
 public class AddBillController {
 
     @FXML private TextField priceField;
-    @FXML private TextField zoneField;
+    @FXML private ComboBox<String> zoneComboBox;
     @FXML private TextField directionField;
-
+    @FXML
+    public void initialize() {
+        zoneComboBox.setItems(FXCollections.observableArrayList("Norte", "Sur", "Centro", "Este", "Oeste"));
+    }
     @FXML
     private void handleSave() {
         try {
             // Validar que los campos no estén vacíos
-            if (priceField.getText().isEmpty() || zoneField.getText().isEmpty() || directionField.getText().isEmpty()) {
+            if (priceField.getText().isEmpty() || zoneComboBox.getValue() == null || directionField.getText().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Error", "Todos los campos son obligatorios.");
                 return;
             }
@@ -33,7 +38,7 @@ public class AddBillController {
                 return;
             }
 
-            String zone = zoneField.getText();
+            String zone = zoneComboBox.getValue();
             String direction = directionField.getText();
 
             // Crear la factura y enviarla

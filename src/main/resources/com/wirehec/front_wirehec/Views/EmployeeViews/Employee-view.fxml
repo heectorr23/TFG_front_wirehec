@@ -3,6 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.chart.PieChart?>
 <BorderPane fx:controller="com.wirehec.front_wirehec.Controllers.EmployeeController" xmlns:fx="http://javafx.com/fxml" stylesheets="@../../Styles/main.css">
     <left>
         <VBox fx:id="menuVBox" styleClass="menu-panel">
@@ -44,7 +45,6 @@
             </padding>
             <rowConstraints>
                 <RowConstraints vgrow="ALWAYS"/>
-                <RowConstraints vgrow="ALWAYS"/>
             </rowConstraints>
             <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS"/>
@@ -70,22 +70,10 @@
                     </TableView>
                 </VBox>
 
-                <!-- Otra sección -->
+                <!-- Gráfico de empleados por roles -->
                 <VBox alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="1">
-                    <Label text="Sección 2" styleClass="section-title"/>
-                    <!-- Contenido adicional -->
-                </VBox>
-
-                <!-- Otra sección -->
-                <VBox alignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="0">
-                    <Label text="Sección 3" styleClass="section-title"/>
-                    <!-- Contenido adicional -->
-                </VBox>
-
-                <!-- Otra sección -->
-                <VBox alignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="1">
-                    <Label text="Sección 4" styleClass="section-title"/>
-                    <!-- Contenido adicional -->
+                    <Label text="Empleados por Roles" styleClass="section-title"/>
+                    <PieChart fx:id="employeeRoleChart" prefWidth="400" prefHeight="250"/>
                 </VBox>
             </children>
         </GridPane>

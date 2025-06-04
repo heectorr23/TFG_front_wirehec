@@ -9,7 +9,7 @@
     </padding>
     <Label text="Añadir Factura" styleClass="form-title"/>
     <TextField fx:id="priceField" promptText="Precio" styleClass="form-input"/>
-    <TextField fx:id="zoneField" promptText="Zona" styleClass="form-input"/>
+    <ComboBox fx:id="zoneComboBox" promptText="Selecciona una zona" styleClass="form-input"/>
     <TextField fx:id="directionField" promptText="Dirección" styleClass="form-input"/>
     <HBox spacing="10" alignment="CENTER">
         <Button text="Guardar" onAction="#handleSave" styleClass="crud-button"/>
