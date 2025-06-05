@@ -302,6 +302,11 @@ public class MainController {
         changeScene("/com/wirehec/front_wirehec/Views/Product-SupplierViews/ProductSupplier-View.fxml");
     }
     public void navigateToContabilidad(ActionEvent event) {
+        String userRole = TokenUtils.getUserRoleFromToken(TokenConstants.TOKEN);
+        if (!"ROLE_BOSS".equals(userRole)) {
+            showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "No tienes permiso para acceder a esta vista.");
+            return;
+        }
         changeScene("/com/wirehec/front_wirehec/Views/ContabilityViews/Contability-view.fxml");
     }
     public void navigateToFacturas(ActionEvent event) {
