@@ -176,8 +176,12 @@ public class SettingController {
         changeScene("/com/wirehec/front_wirehec/Views/Product-SupplierViews/ProductSupplier-View.fxml");
     }
 
-    @FXML
-    private void navigateToContabilidad() {
+    public void navigateToContabilidad(ActionEvent event) {
+        String userRole = TokenUtils.getUserRoleFromToken(TokenConstants.TOKEN);
+        if (!"ROLE_BOSS".equals(userRole)) {
+            showAlert("Acceso Denegado", "No tienes permiso para acceder a esta vista.", Alert.AlertType.ERROR);
+            return;
+        }
         changeScene("/com/wirehec/front_wirehec/Views/ContabilityViews/Contability-view.fxml");
     }
 
